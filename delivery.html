@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Asan Tiffin - Delivery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--saffron:#FF6B00;--green:#27AE60;--red:#E74C3C;--blue:#2980B9;--dark:#1A1A2E;--purple:#8E44AD;--wa:#25D366}
+body{font-family:'Segoe UI',sans-serif;background:#F0F0F0;color:var(--dark);padding-bottom:80px}
+
+.topbar{background:linear-gradient(135deg,#FF6B00,#FFA500);padding:18px 16px;color:#fff;text-align:center;position:sticky;top:0;z-index:99;box-shadow:0 4px 12px rgba(255,107,0,.3)}
+.tb-title{font-size:24px;font-weight:800}
+.tb-sub{font-size:12px;opacity:.9;margin-top:3px}
+.tb-date{font-size:11px;opacity:.75;margin-top:2px}
+
+.score-bar{background:linear-gradient(135deg,#1A1A2E,#2C3E50);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.score-left{color:#fff}
+.score-title{font-size:11px;opacity:.7;font-weight:600}
+.score-val{font-size:20px;font-weight:800;color:#FFA500}
+.score-right{display:flex;gap:8px}
+.score-mini{background:rgba(255,255,255,.1);border-radius:10px;padding:7px 10px;text-align:center}
+.score-mini-val{font-size:15px;font-weight:800;color:#fff}
+.score-mini-lbl{font-size:8px;color:rgba(255,255,255,.6);font-weight:600}
+
+/* TIFFIN COLLECTION BAR */
+.collect-bar{background:linear-gradient(135deg,#8E44AD,#9B59B6);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.collect-info{color:#fff}
+.collect-title{font-size:11px;opacity:.8;font-weight:600}
+.collect-val{font-size:18px;font-weight:800}
+.collect-btn{background:rgba(255,255,255,.25);border:none;border-radius:10px;padding:8px 14px;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+
+.tabs{display:flex;background:#fff;border-bottom:2px solid #F0F0F0;sticky;top:0}
+.tab{flex:1;padding:12px;text-align:center;font-size:12px;font-weight:700;color:#aaa;cursor:pointer;border-bottom:3px solid transparent}
+.tab.active{color:var(--saffron);border-bottom-color:var(--saffron)}
+
+.section{padding:14px}
+.sec-title{font-size:16px;font-weight:800;margin-bottom:12px}
+
+.order-card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.08);border-left:5px solid #EEE}
+.order-card.preparing{border-left-color:var(--blue)}
+.order-card.on-way{border-left-color:var(--saffron);background:#FFFCF5}
+.order-card.delivered{border-left-color:var(--green);background:#F8FFF9}
+.order-card.collected{border-left-color:var(--purple);background:#FAF5FF;opacity:.8}
+.order-card.cancelled{border-left-color:var(--red);opacity:.55}
+
+.cust-name{font-size:18px;font-weight:800;margin-bottom:4px}
+.cust-addr{font-size:13px;color:#555;margin-bottom:6px;line-height:1.5}
+.order-info{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tag{background:#F5F5F5;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;color:#555}
+
+.pill{display:inline-flex;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px}
+.pill-blue{background:#E8F4FD;color:var(--blue)}
+.pill-orange{background:#FFF0E6;color:var(--saffron)}
+.pill-green{background:#E8F8EE;color:var(--green)}
+.pill-red{background:#FDEDEC;color:var(--red)}
+.pill-gray{background:#F5F5F5;color:#888}
+.pill-purple{background:#F5EEF8;color:var(--purple)}
+
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.big-btn{padding:15px;border-radius:14px;border:none;cursor:pointer;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%}
+.big-delivered{background:linear-gradient(135deg,#27AE60,#2ECC71);color:#fff;box-shadow:0 4px 12px rgba(39,174,96,.3)}
+.big-onway{background:linear-gradient(135deg,#FF6B00,#FFA500);color:#fff;box-shadow:0 4px 12px rgba(255,107,0,.3)}
+.big-collect{background:linear-gradient(135deg,#8E44AD,#9B59B6);color:#fff;box-shadow:0 4px 12px rgba(142,68,173,.3)}
+
+.small-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sm-btn{padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:5px;text-decoration:none;flex:1;justify-content:center}
+.sm-call{background:#E8F4FD;color:var(--blue)}
+.sm-maps{background:#EEF2FF;color:#4285F4}
+.sm-wa{background:#E8F8EE;color:var(--wa)}
+.sm-cancel{background:#FDEDEC;color:var(--red)}
+
+.collect-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;border-left:4px solid #EEE}
+.collect-card.pending-collect{border-left-color:var(--saffron)}
+.collect-card.done-collect{border-left-color:var(--purple);opacity:.7}
+
+.new-alert{background:linear-gradient(135deg,#FF6B00,#FFA500);color:#fff;border-radius:12px;padding:12px 16px;margin:0 14px 14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px;animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.toast{position:fixed;bottom:24px;left:14px;right:14px;background:var(--dark);color:#fff;padding:14px 18px;border-radius:14px;font-size:14px;font-weight:700;z-index:9999;text-align:center;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.fab{position:fixed;bottom:22px;right:16px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#FFA500);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(255,107,0,.4);z-index:100;display:flex;align-items:center;justify-content:center}
+
+.setup-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1A1A2E,#16213E);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.setup-box{background:#fff;border-radius:24px;padding:30px 24px;width:100%;max-width:380px;text-align:center}
+.setup-input{width:100%;padding:14px;border-radius:12px;border:2px solid #EEE;font-size:16px;text-align:center;font-weight:600;outline:none;margin-bottom:14px}
+.setup-input:focus{border-color:var(--saffron)}
+.setup-btn{width:100%;padding:15px;background:linear-gradient(135deg,#FF6B00,#FFA500);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer}
+.empty-card{background:#fff;border-radius:18px;padding:40px 20px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div class="setup-overlay" id="setup-overlay">
+  <div class="setup-box">
+    <div style="font-size:60px;margin-bottom:16px">🛵</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:8px">Asan Tiffin Delivery</div>
+    <div style="font-size:13px;color:#888;margin-bottom:24px;line-height:1.6">Apna naam daalo - ek baar set hoga! 😊</div>
+    <input class="setup-input" id="name-inp" placeholder="Tumhara naam...">
+    <button class="setup-btn" onclick="saveName()">✅ Shuru Karo!</button>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="tb-title">🛵 Asan Tiffin</div>
+  <div class="tb-sub" id="boy-name">Loading...</div>
+  <div class="tb-date" id="top-date"></div>
+</div>
+
+<!-- SCORE BAR -->
+<div class="score-bar">
+  <div class="score-left">
+    <div class="score-title">🏆 AAJ KA SCORE</div>
+    <div class="score-val" id="score-val">0 Delivered</div>
+  </div>
+  <div class="score-right">
+    <div class="score-mini"><div class="score-mini-val" id="sc-total">0</div><div class="score-mini-lbl">TOTAL</div></div>
+    <div class="score-mini"><div class="score-mini-val" id="sc-baaki" style="color:#FFA500">0</div><div class="score-mini-lbl">BAAKI</div></div>
+    <div class="score-mini"><div class="score-mini-val" id="sc-done" style="color:#2ECC71">0</div><div class="score-mini-lbl">DONE</div></div>
+  </div>
+</div>
+
+<!-- TIFFIN COLLECTION BAR -->
+<div class="collect-bar">
+  <div class="collect-info">
+    <div class="collect-title">📦 TIFFIN COLLECTION</div>
+    <div class="collect-val" id="collect-val">0 Liye / 0 Baaki</div>
+  </div>
+  <button class="collect-btn" onclick="showTab('collection')">📋 List Dekho</button>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" id="tab-orders" onclick="showTab('orders')">📦 Orders</div>
+  <div class="tab" id="tab-bulk" onclick="showTab('bulk')">⚡ Bulk</div>
+  <div class="tab" id="tab-collection" onclick="showTab('collection')">🔄 Collection</div>
+</div>
+
+<div id="new-alert-area"></div>
+
+<!-- ORDERS TAB -->
+<div id="page-orders" class="section">
+  <div id="orders-list"></div>
+</div>
+
+<!-- BULK DELIVERY TAB -->
+<div id="page-bulk" class="section" style="display:none">
+  <div class="sec-title">⚡ Bulk Delivery - Ek Saath</div>
+  <div style="background:#FFF8F0;border-radius:12px;padding:12px;margin-bottom:14px;font-size:12px;color:#888;border:1px solid #FFE0C0">
+    💡 <b>Kaise use karein:</b> Sab select karo jo ek jagah deliver karne hain → "Sab Delivered" dabao!
+  </div>
+  <!-- Select All / Area filter -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button onclick="selectAllBulk(true)" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer">✅ Sab Select</button>
+    <button onclick="selectAllBulk(false)" style="background:#F0F0F0;color:#555;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer">❌ Sab Hatao</button>
+  </div>
+  <div id="bulk-list"></div>
+  <div id="bulk-footer" style="display:none;position:sticky;bottom:80px;background:#fff;border-radius:14px;padding:14px;box-shadow:0 -4px 20px rgba(0,0,0,.15);margin-top:10px">
+    <div id="bulk-count" style="font-size:13px;color:#888;font-weight:600;margin-bottom:10px;text-align:center"></div>
+    <button onclick="doBulkDeliver()" style="width:100%;padding:16px;background:linear-gradient(135deg,#27AE60,#2ECC71);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(39,174,96,.3)">✅ Sab Delivered Mark Karo!</button>
+  </div>
+</div>
+
+<!-- COLLECTION TAB -->
+<div id="page-collection" class="section" style="display:none">
+  <div class="sec-title">📦 Tiffin Collection - Aaj</div>
+  <div id="collection-list"></div>
+</div>
+
+<button class="fab" onclick="loadOrders()">🔄</button>
+<div class="toast" id="toast"></div>
+
+<script>
+var DB={customers:[],orders:[],payments:[],expenses:[]};
+var DNAME=localStorage.getItem('dbName')||'';
+var lastOrderCount=0;
+var audioCtx=null;
+var activeTab='orders';
+
+function isChutti(custId){
+  var tod=today();
+  for(var i=0;i<DB.orders.length;i++){
+    if(DB.orders[i].custId===custId&&DB.orders[i].date===tod&&DB.orders[i].isChutti) return true;
+  }
+  return false;
+}
+function saveDB(){ try{ localStorage.setItem('at3',JSON.stringify(DB)); }catch(e){} }
+
+function today(){
+  var d=new Date(),m=d.getMonth()+1,day=d.getDate();
+  return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day;
+}
+
+function toast(msg,dur){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show';
+  setTimeout(function(){ t.className='toast'; },dur||2500);
+}
+
+function showTab(tab){
+  activeTab=tab;
+  document.getElementById('page-orders').style.display=tab==='orders'?'block':'none';
+  document.getElementById('page-bulk').style.display=tab==='bulk'?'block':'none';
+  document.getElementById('page-collection').style.display=tab==='collection'?'block':'none';
+  document.getElementById('tab-orders').className='tab'+(tab==='orders'?' active':'');
+  document.getElementById('tab-bulk').className='tab'+(tab==='bulk'?' active':'');
+  document.getElementById('tab-collection').className='tab'+(tab==='collection'?' active':'');
+  if(tab==='collection') renderCollection();
+  if(tab==='bulk') renderBulk();
+}
+
+function playAlert(){
+  try{
+    if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    [880,1100,880,1100].forEach(function(f,i){
+      var o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value=f; o.type='sine';
+      g.gain.setValueAtTime(0.3,audioCtx.currentTime+i*0.15);
+      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+i*0.15+0.14);
+      o.start(audioCtx.currentTime+i*0.15);
+      o.stop(audioCtx.currentTime+i*0.15+0.14);
+    });
+  }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]); }catch(e){}
+}
+
+function saveName(){
+  var n=document.getElementById('name-inp').value.trim();
+  if(!n){ document.getElementById('name-inp').style.borderColor='red'; return; }
+  DNAME=n; localStorage.setItem('dbName',n);
+  document.getElementById('setup-overlay').style.display='none';
+  document.getElementById('boy-name').textContent='🛵 '+DNAME;
+  toast('✅ Welcome '+DNAME+'!',2500);
+  loadOrders();
+}
+
+function sendOnWayWA(phone,name){
+  if(!phone) return;
+  var msg='🛵 *Asan Tiffin*\n\nNamaste *'+name+'* ji! 🙏\n\nAapka tiffin *raste mein hai!* 🍱\nThodi der mein pahunch jayega.\n\n_Asan Tiffin - Asan Ghar Ka Khana_ 🍛';
+  window.open('https://wa.me/91'+phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+function updateStatus(orderId,status){
+  loadDB();
+  var custPhone='',custName='';
+  for(var i=0;i<DB.orders.length;i++){
+    if(DB.orders[i].id===orderId){
+      DB.orders[i].status=status;
+      if(status==='Delivered'){
+        DB.orders[i].deliveredBy=DNAME;
+        DB.orders[i].deliveredTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        // Auto mark tiffin as "pending collection"
+        DB.orders[i].tiffinCollected=false;
+      }
+      var cid=DB.orders[i].custId;
+      for(var j=0;j<DB.customers.length;j++){
+        if(DB.customers[j].id===cid){ custPhone=DB.customers[j].phone; custName=DB.customers[j].name; break; }
+      }
+      break;
+    }
+  }
+  saveDB();
+  if(status==='Delivered'){
+    toast('✅ Delivered! Shaam ko tiffin lena mat bhulna! 📦',3500);
+    try{ if(navigator.vibrate) navigator.vibrate([100,50,100,50,500]); }catch(e){}
+  } else if(status==='On the Way'){
+    toast('🛵 On the Way!',2000);
+    if(custPhone) sendOnWayWA(custPhone,custName);
+  } else {
+    toast('❌ Cancelled!');
+  }
+  loadOrders();
+}
+
+function markTiffinCollected(orderId){
+  loadDB();
+  for(var i=0;i<DB.orders.length;i++){
+    if(DB.orders[i].id===orderId){
+      DB.orders[i].tiffinCollected=true;
+      DB.orders[i].collectedTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      break;
+    }
+  }
+  saveDB();
+  toast('📦 Tiffin collected! ✅',2000);
+  try{ if(navigator.vibrate) navigator.vibrate([100,50,200]); }catch(e){}
+  loadOrders();
+  if(activeTab==='collection') renderCollection();
+}
+
+function loadOrders(){
+  loadDB();
+  var tod=today();
+  var todOrds=DB.orders.filter(function(o){ return o.date===tod; });
+  var done=todOrds.filter(function(o){ return o.status==='Delivered'; }).length;
+  var canc=todOrds.filter(function(o){ return o.status==='Cancelled'; }).length;
+  var baaki=todOrds.length-done-canc;
+
+  // Tiffin collection count
+  var deliveredOrds=todOrds.filter(function(o){ return o.status==='Delivered'; });
+  var collected=deliveredOrds.filter(function(o){ return o.tiffinCollected; }).length;
+  var collectPending=deliveredOrds.length-collected;
+
+  document.getElementById('sc-total').textContent=todOrds.length;
+  document.getElementById('sc-baaki').textContent=baaki;
+  document.getElementById('sc-done').textContent=done;
+  var scoreEmoji=done===0?'🚀':done<3?'💪':done<6?'🔥':'⭐';
+  document.getElementById('score-val').textContent=scoreEmoji+' '+done+' Delivered';
+  document.getElementById('collect-val').textContent=collected+' Liye ✅ / '+collectPending+' Baaki 📦';
+
+  // New order alert
+  var newAlert=document.getElementById('new-alert-area');
+  if(todOrds.length>lastOrderCount && lastOrderCount>0){
+    var nc=todOrds.length-lastOrderCount;
+    newAlert.innerHTML='<div class="new-alert">🔔 '+nc+' naya order aaya! Jaldi dekho!</div>';
+    playAlert();
+    setTimeout(function(){ newAlert.innerHTML=''; },5000);
+  }
+  lastOrderCount=todOrds.length;
+
+  var el=document.getElementById('orders-list');
+  if(!todOrds.length){
+    el.innerHTML='<div class="empty-card"><div style="font-size:60px;margin-bottom:16px">🛵</div><div style="font-size:16px;font-weight:800;color:#888">Aaj koi order nahi</div></div>';
+    return;
+  }
+
+  var sOrd={'Preparing':0,'Pending':1,'On the Way':2,'Delivered':3,'Cancelled':4};
+  todOrds.sort(function(a,b){ return (sOrd[a.status]||5)-(sOrd[b.status]||5); });
+  var pCls={'Pending':'pill-gray','Preparing':'pill-blue','On the Way':'pill-orange','Delivered':'pill-green','Cancelled':'pill-red'};
+  var cCls={'Pending':'preparing','Preparing':'preparing','On the Way':'on-way','Delivered':'delivered','Cancelled':'cancelled'};
+
+  var h='';
+  todOrds.forEach(function(o){
+    var c=null;
+    for(var i=0;i<DB.customers.length;i++) if(DB.customers[i].id===o.custId){ c=DB.customers[i]; break; }
+    var name=c?c.name:'Unknown';
+    var phone=c?(c.phone||''):'';
+    var addr=c?(c.address||''):'';
+    var mapsLink=addr?'https://maps.google.com/?q='+encodeURIComponent(addr):'';
+
+    h+='<div class="order-card '+(cCls[o.status]||'')+'">';
+    h+='<span class="pill '+(pCls[o.status]||'pill-gray')+'">'+o.status+'</span>';
+    if(o.status==='Delivered'&&!o.tiffinCollected) h+='<span class="pill pill-orange" style="margin-left:6px">📦 Tiffin Baaki</span>';
+    if(o.status==='Delivered'&&o.tiffinCollected) h+='<span class="pill pill-purple" style="margin-left:6px">✅ Tiffin Liya</span>';
+    // CHUTTI WARNING
+    if(isChutti(o.custId)){
+      h+='<div style="background:#E74C3C;color:#fff;border-radius:10px;padding:12px;margin-bottom:10px;font-size:14px;font-weight:800;text-align:center;letter-spacing:.5px">🚫 CHUTTI HAI! MAT DENA TIFFIN!</div>';
+    }
+    h+='<div class="cust-name">'+name+'</div>';
+    if(addr) h+='<div class="cust-addr">📍 '+addr+'</div>';
+    h+='<div class="order-info"><span class="tag">'+(o.meal||'Tiffin')+'</span><span class="tag">'+o.type+'</span><span class="tag">₹'+o.amount+'</span>'+(o.note?'<span class="tag">📝 '+o.note+'</span>':'')+'</div>';
+
+    // ACTION BUTTONS
+    if(o.status==='Preparing'||o.status==='Pending'){
+      h+='<div class="action-grid">';
+      h+='<button class="big-btn big-onway" onclick="updateStatus('+o.id+',\'On the Way\')">🛵 Niklo!</button>';
+      h+='<button class="big-btn big-delivered" onclick="updateStatus('+o.id+',\'Delivered\')">✅ Delivered</button>';
+      h+='</div>';
+    }
+    if(o.status==='On the Way'){
+      h+='<div style="background:#FFF0E6;border-radius:10px;padding:10px;text-align:center;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--saffron)">🛵 Raste mein - WA bheja gaya!</div>';
+      h+='<button class="big-btn big-delivered" style="margin-bottom:10px" onclick="updateStatus('+o.id+',\'Delivered\')">✅ Delivered Ho Gaya!</button>';
+    }
+    if(o.status==='Delivered'){
+      h+='<div style="background:#E8F8EE;border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--green)">✅ Delivered '+( o.deliveredTime?'at '+o.deliveredTime:'')+'</div>';
+      // Tiffin collect button
+      if(!o.tiffinCollected){
+        h+='<button class="big-btn big-collect" style="margin-bottom:10px" onclick="markTiffinCollected('+o.id+')">📦 Tiffin Wapas Liya!</button>';
+      } else {
+        h+='<div style="background:#F5EEF8;border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--purple)">📦 Tiffin Liya ✅ '+(o.collectedTime?'at '+o.collectedTime:'')+'</div>';
+      }
+    }
+
+    h+='<div class="small-btns">';
+    if(phone) h+='<a class="sm-btn sm-call" href="tel:'+phone+'">📞</a>';
+    if(mapsLink) h+='<a class="sm-btn sm-maps" href="'+mapsLink+'" target="_blank">🗺️</a>';
+    if(phone) h+='<a class="sm-btn sm-wa" href="https://wa.me/91'+phone.replace(/\D/g,'')+'" target="_blank">💬</a>';
+    if(o.status!=='Delivered'&&o.status!=='Cancelled') h+='<button class="sm-btn sm-cancel" onclick="updateStatus('+o.id+',\'Cancelled\')">❌</button>';
+    h+='</div></div>';
+  });
+  el.innerHTML=h;
+
+  if(activeTab==='collection') renderCollection();
+}
+
+function renderCollection(){
+  loadDB();
+  var tod=today();
+  var deliveredOrds=DB.orders.filter(function(o){ return o.date===tod&&o.status==='Delivered'; });
+  var el=document.getElementById('collection-list');
+
+  if(!deliveredOrds.length){
+    el.innerHTML='<div class="empty-card"><div style="font-size:48px;margin-bottom:12px">📦</div><div style="font-size:15px;font-weight:800;color:#888">Abhi koi delivery nahi hui</div></div>';
+    return;
+  }
+
+  // Sort: pending collection first
+  deliveredOrds.sort(function(a,b){ return (a.tiffinCollected?1:0)-(b.tiffinCollected?1:0); });
+
+  var pending=deliveredOrds.filter(function(o){ return !o.tiffinCollected; });
+  var done2=deliveredOrds.filter(function(o){ return o.tiffinCollected; });
+
+  var h='';
+
+  // Summary card
+  h+='<div style="background:linear-gradient(135deg,#8E44AD,#9B59B6);border-radius:14px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">';
+  h+='<div><div style="font-size:28px;font-weight:800;color:#fff">'+pending.length+'</div><div style="font-size:11px;color:rgba(255,255,255,.8);font-weight:700">📦 LENA BAAKI</div></div>';
+  h+='<div><div style="font-size:28px;font-weight:800;color:#2ECC71">'+done2.length+'</div><div style="font-size:11px;color:rgba(255,255,255,.8);font-weight:700">✅ LI GAYI</div></div>';
+  h+='</div>';
+
+  if(pending.length){
+    h+='<div style="font-size:13px;font-weight:800;color:var(--saffron);margin-bottom:10px">📦 Lena Baaki ('+pending.length+')</div>';
+    pending.forEach(function(o){
+      var c=null;
+      for(var i=0;i<DB.customers.length;i++) if(DB.customers[i].id===o.custId){ c=DB.customers[i]; break; }
+      var name=c?c.name:'Unknown';
+      var addr=c?(c.address||''):'';
+      var phone=c?(c.phone||''):'';
+      h+='<div class="collect-card pending-collect">';
+      h+='<div><div style="font-weight:800;font-size:15px">'+name+'</div>';
+      if(addr) h+='<div style="font-size:12px;color:#888;margin-top:2px">📍 '+addr+'</div>';
+      h+='<div style="font-size:11px;color:#888;margin-top:2px">Delivered: '+(o.deliveredTime||'--')+'</div></div>';
+      h+='<button class="big-btn big-collect" style="width:auto;padding:10px 14px;font-size:12px" onclick="markTiffinCollected('+o.id+')">📦 Liya!</button>';
+      h+='</div>';
+    });
+  }
+
+  if(done2.length){
+    h+='<div style="font-size:13px;font-weight:800;color:var(--purple);margin:14px 0 10px">✅ Li Gayi ('+done2.length+')</div>';
+    done2.forEach(function(o){
+      var c=null;
+      for(var i=0;i<DB.customers.length;i++) if(DB.customers[i].id===o.custId){ c=DB.customers[i]; break; }
+      var name=c?c.name:'Unknown';
+      h+='<div class="collect-card done-collect">';
+      h+='<div><div style="font-weight:800;font-size:14px">'+name+'</div>';
+      h+='<div style="font-size:11px;color:#888;margin-top:2px">Collected: '+(o.collectedTime||'--')+'</div></div>';
+      h+='<span style="font-size:22px">✅</span>';
+      h+='</div>';
+    });
+  }
+
+  el.innerHTML=h;
+}
+
+function renderBulk(){
+  loadDB();
+  var tod=today();
+  var activeOrds=DB.orders.filter(function(o){ return o.date===tod && o.status!=='Delivered' && o.status!=='Cancelled'; });
+  var el=document.getElementById('bulk-list');
+
+  if(!activeOrds.length){
+    el.innerHTML='<div class="empty-card"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:15px;font-weight:800;color:#888">Sab deliver ho gaye!</div></div>';
+    document.getElementById('bulk-footer').style.display='none';
+    return;
+  }
+
+  // Group by ZONE
+  var groups={};
+  activeOrds.forEach(function(o){
+    var c=null;
+    for(var i=0;i<DB.customers.length;i++) if(DB.customers[i].id===o.custId){ c=DB.customers[i]; break; }
+    var zone=(c&&c.zone&&c.zone.trim())?c.zone.trim():'🏘️ No Zone';
+    if(!groups[zone]) groups[zone]=[];
+    groups[zone].push({order:o,cust:c});
+  });
+
+  // Zone colors
+  var zoneColors=['#FF6B00','#2980B9','#27AE60','#8E44AD','#E74C3C','#F39C12','#16A085'];
+  var zoneKeys=Object.keys(groups);
+
+  var h='';
+  // Zone filter buttons
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">';
+  h+='<button onclick="filterZone(\'all\')" id="zone-btn-all" style="background:var(--saffron);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">🌐 Sab Zones</button>';
+  zoneKeys.forEach(function(z,idx){
+    var col=zoneColors[idx%zoneColors.length];
+    h+='<button onclick="filterZone(\''+z+'\')" id="zone-btn-'+idx+'" style="background:'+col+'22;color:'+col+';border:2px solid '+col+';border-radius:20px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">🏘️ '+z+' ('+groups[z].length+')</button>';
+  });
+  h+='</div>';
+
+  zoneKeys.forEach(function(zone,idx){
+    var items=groups[zone];
+    var col=zoneColors[idx%zoneColors.length];
+    h+='<div class="zone-group" data-zone="'+zone+'" style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;border-top:4px solid '+col+';box-shadow:0 4px 12px rgba(0,0,0,.08)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+    h+='<div style="font-size:15px;font-weight:800;color:'+col+'">🏘️ '+zone+'</div>';
+    h+='<div style="display:flex;gap:6px">';
+    h+='<span style="background:'+col+'22;color:'+col+';border-radius:20px;padding:4px 10px;font-size:11px;font-weight:800">'+items.length+' tiffin</span>';
+    h+='<button onclick="selectZone(\''+zone+'\',true)" style="background:'+col+';color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">✅ Sab</button>';
+    h+='<button onclick="selectZone(\''+zone+'\',false)" style="background:#F0F0F0;color:#555;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">❌</button>';
+    h+='</div></div>';
+    items.forEach(function(item){
+      var o=item.order; var c=item.cust;
+      var name=c?c.name:'Unknown';
+      var addr=c?(c.address||''):'';
+      var onChutti=isChutti(o.custId);
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:10px;background:'+(onChutti?'#FDEDEC':'#FAFAFA')+';border-radius:10px;margin-bottom:8px'+(onChutti?';border:2px solid #E74C3C':'')+'">';
+      h+='<input type="checkbox" id="bulk-chk-'+o.id+'" '+(onChutti?'':'checked')+' onchange="updateBulkCount()" style="width:22px;height:22px;accent-color:'+col+';cursor:pointer;flex-shrink:0">';
+      h+='<div style="flex:1">';
+      h+='<div style="font-weight:700;font-size:14px">'+name+(onChutti?' 🚫':'')+'</div>';
+      if(onChutti) h+='<div style="font-size:11px;font-weight:800;color:#E74C3C">CHUTTI HAI - Auto Unchecked!</div>';
+      if(addr) h+='<div style="font-size:11px;color:#888">📍 '+addr+'</div>';
+      h+='<div style="font-size:11px;color:#888">'+(o.meal||'Tiffin')+' • '+o.type+'</div>';
+      h+='</div>';
+      h+='<div style="font-weight:800;color:'+col+'">₹'+o.amount+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+
+  el.innerHTML=h;
+  document.getElementById('bulk-footer').style.display='block';
+  updateBulkCount();
+}
+
+function filterZone(zone){
+  var groups=document.querySelectorAll('.zone-group');
+  groups.forEach(function(g){
+    g.style.display=(zone==='all'||g.dataset.zone===zone)?'block':'none';
+  });
+}
+
+function selectZone(zone,val){
+  var groups=document.querySelectorAll('.zone-group');
+  groups.forEach(function(g){
+    if(g.dataset.zone===zone){
+      g.querySelectorAll('input[type=checkbox]').forEach(function(cb){ cb.checked=val; });
+    }
+  });
+  updateBulkCount();
+}
+
+function updateBulkCount(){
+  var checkboxes=document.querySelectorAll('[id^="bulk-chk-"]');
+  var checked=0;
+  checkboxes.forEach(function(cb){ if(cb.checked) checked++; });
+  document.getElementById('bulk-count').textContent=checked+' tiffin selected';
+  document.getElementById('bulk-footer').style.display=checked>0?'block':'none';
+}
+
+function selectAllBulk(val){
+  var checkboxes=document.querySelectorAll('[id^="bulk-chk-"]');
+  checkboxes.forEach(function(cb){ cb.checked=val; });
+  updateBulkCount();
+}
+
+function doBulkDeliver(){
+  loadDB();
+  var checkboxes=document.querySelectorAll('[id^="bulk-chk-"]');
+  var count=0;
+  var now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  checkboxes.forEach(function(cb){
+    if(!cb.checked) return;
+    var oid=parseInt(cb.id.replace('bulk-chk-',''));
+    for(var i=0;i<DB.orders.length;i++){
+      if(DB.orders[i].id===oid){
+        DB.orders[i].status='Delivered';
+        DB.orders[i].deliveredBy=DNAME;
+        DB.orders[i].deliveredTime=now;
+        DB.orders[i].tiffinCollected=false;
+        count++;
+        break;
+      }
+    }
+  });
+  saveDB();
+  toast('✅ '+count+' tiffin delivered! Shabash! 🎉',3000);
+  try{ if(navigator.vibrate) navigator.vibrate([100,50,100,50,500]); }catch(e){}
+  loadOrders();
+  renderBulk();
+}
+
+function init(){
+  document.getElementById('top-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  if(DNAME){
+    document.getElementById('setup-overlay').style.display='none';
+    document.getElementById('boy-name').textContent='🛵 '+DNAME;
+    loadOrders();
+  }
+}
+
+init();
+setInterval(loadOrders,20000);
+</script>
+</body>
+</html>
