@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asan Ghar Ka Khana — Tiffin Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --saffron:#FF6B00; --turmeric:#FFA500; --cream:#FFF8F0;
+  --leaf:#2D6A4F; --mint:#52B788; --dark:#1A1A2E; --charcoal:#2C2C3E;
+  --light:#F5F5F5; --white:#fff; --red:#E74C3C; --green:#27AE60;
+  --gold:#F39C12; --blue:#2980B9; --wa:#25D366;
+  --shadow:0 4px 20px rgba(255,107,0,.15);
+  --card:0 8px 32px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:256px;background:var(--dark);position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.main{margin-left:256px;flex:1}
+/* SIDEBAR */
+.sb-brand{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo{display:flex;align-items:center;gap:10px}
+.sb-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sb-name{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:800;color:#fff;line-height:1.2}
+.sb-tag{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase}
+.nav-sec{padding:14px 10px 6px}
+.nav-lbl{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:2px;padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;cursor:pointer;color:rgba(255,255,255,.6);font-size:13px;font-weight:500;transition:all .2s;margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:linear-gradient(135deg,var(--saffron),var(--turmeric));color:#fff;box-shadow:0 4px 14px rgba(255,107,0,.4)}
+.nav-item .ic{font-size:17px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+/* TOPBAR */
+.topbar{background:#fff;padding:14px 26px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,.06);position:sticky;top:0;z-index:50}
+.tb-title{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800}
+.tb-right{display:flex;align-items:center;gap:14px}
+.tb-date{font-size:12px;color:#888}
+.avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+/* PAGES */
+.page{display:none;padding:24px;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:16px;padding:20px;box-shadow:var(--card);position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;right:-12px;top:-12px;width:70px;height:70px;border-radius:50%;opacity:.08}
+.sc-orange::after{background:var(--saffron)}.sc-green::after{background:var(--leaf)}.sc-gold::after{background:var(--gold)}.sc-red::after{background:var(--red)}.sc-blue::after{background:var(--blue)}
+.stat-icon{font-size:26px;margin-bottom:10px}
+.stat-val{font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800}
+.stat-label{font-size:12px;color:#888;font-weight:500;margin-top:2px}
+/* CARDS */
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:var(--card);margin-bottom:20px}
+.card-title{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3-1{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:11px 14px;font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #F5F5F5}
+td{padding:13px 14px;font-size:13px;border-bottom:1px solid #F8F8F8;vertical-align:middle}
+tr:hover td{background:#FAFAFA}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700}
+.p-green{background:#E8F8EE;color:var(--green)}
+.p-yellow{background:#FFF3CD;color:var(--gold)}
+.p-red{background:#FDEDEC;color:var(--red)}
+.p-blue{background:#E8F4FD;color:var(--blue)}
+.p-orange{background:#FFF0E6;color:var(--saffron)}
+/* TYPE BADGES */
+.veg{background:#E8F8EE;color:var(--green);border:1px solid var(--green);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.nonveg{background:#FDEDEC;color:var(--red);border:1px solid var(--red);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:11px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--saffron),var(--turmeric));color:#fff;box-shadow:0 4px 12px rgba(255,107,0,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,107,0,.4)}
+.btn-secondary{background:var(--light);color:var(--dark)}
+.btn-danger{background:#FDEDEC;color:var(--red)}
+.btn-success{background:#E8F8EE;color:var(--green)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-sms{background:var(--blue);color:#fff}
+.btn-sm{padding:6px 13px;font-size:12px;border-radius:9px}
+/* FORMS */
+.form-group{margin-bottom:16px}
+.form-label{font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:7px;display:block}
+.form-input{width:100%;padding:11px 14px;border:2px solid #EEE;border-radius:11px;font-family:'Poppins',sans-serif;font-size:13px;color:var(--dark);background:var(--cream);transition:border-color .2s;outline:none}
+.form-input:focus{border-color:var(--saffron);background:#fff}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:22px;padding:28px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-title{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800}
+.modal-close{width:30px;height:30px;border-radius:8px;background:var(--light);border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+/* TRACKER */
+.tracker{display:flex;align-items:flex-start;margin:18px 0}
+.t-step{flex:1;text-align:center;position:relative}
+.t-step::after{content:'';position:absolute;top:17px;left:60%;right:-40%;height:3px;background:#EEE;z-index:0}
+.t-step:last-child::after{display:none}
+.t-step.done::after{background:var(--green)}
+.t-circle{width:34px;height:34px;border-radius:50%;background:#EEE;border:3px solid #EEE;display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto 7px;position:relative;z-index:1}
+.t-step.done .t-circle{background:var(--green);border-color:var(--green);color:#fff}
+.t-step.current .t-circle{background:var(--saffron);border-color:var(--saffron);color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,.4)}50%{box-shadow:0 0 0 8px rgba(255,107,0,0)}}
+.t-label{font-size:10px;font-weight:600;color:#aaa}
+.t-step.done .t-label,.t-step.current .t-label{color:var(--dark)}
+/* BARS */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding:8px 0}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:7px 7px 0 0;background:linear-gradient(to top,var(--saffron),var(--turmeric));min-height:3px}
+.bar-lbl{font-size:9px;color:#888;font-weight:600}
+.bar-val{font-size:10px;font-weight:700;color:var(--dark)}
+/* SEARCH */
+.search-row{display:flex;gap:10px;margin-bottom:18px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:160px;padding:11px 14px 11px 40px;border:2px solid #EEE;border-radius:11px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat 13px center}
+.search-input:focus{border-color:var(--saffron)}
+/* PAGE HEADER */
+.pg-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.pg-sub{font-size:12px;color:#888;margin-top:2px}
+/* TOAST */
+.toast{position:fixed;bottom:26px;right:26px;background:var(--dark);color:#fff;padding:13px 20px;border-radius:13px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 8px 24px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+/* MENU CARDS */
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px}
+.menu-card{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--card);border:2px solid transparent;transition:all .2s;position:relative}
+.menu-card:hover{border-color:var(--saffron);transform:translateY(-2px)}
+.menu-card.featured{border-color:var(--saffron)}
+/* PAYMENT STATUS */
+.progress-bar{width:80px;height:6px;background:#F0F0F0;border-radius:4px;margin-top:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s}
+/* ACTIVITY */
+.activity-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F5F5F5}
+.activity-item:last-child{border-bottom:none}
+.a-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.a-text{font-size:13px;flex:1}
+.a-time{font-size:11px;color:#aaa}
+/* MSG TEMPLATES */
+.tmpl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.tmpl-card{border-radius:11px;padding:12px;cursor:pointer;text-align:center;transition:all .2s;border:2px solid transparent}
+.tmpl-card:hover{transform:translateY(-2px)}
+/* CUSTOMER CARD */
+.cust-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--cream);border-radius:12px;margin-bottom:10px}
+.cust-av{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--saffron),var(--turmeric));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0}
+/* RESPONSIVE */
+@media(max-width:900px){.sidebar{transform:translateX(-256px)}.main{margin-left:0}.stat-grid{grid-template-columns:repeat(2,1fr)}.menu-grid{grid-template-columns:1fr 1fr}.grid-2,.grid-3-1{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#DDD;border-radius:4px}
+.empty{text-align:center;padding:40px;color:#aaa}
+.empty .e-icon{font-size:44px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-icon">🍱</div>
+      <div>
+        <div class="sb-name">Asan Ghar Ka Khana</div>
+        <div class="sb-tag">Ghar Jaisa Swad</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Main</div>
+    <div class="nav-item active" data-page="dashboard"><span class="ic">📊</span> Dashboard</div>
+    <div class="nav-item" data-page="customers"><span class="ic">👥</span> Customers</div>
+    <div class="nav-item" data-page="orders"><span class="ic">📦</span> Orders <span class="nav-badge" id="pending-badge">0</span></div>
+    <div class="nav-item" data-page="delivery"><span class="ic">🛵</span> Delivery Track</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Finance</div>
+    <div class="nav-item" data-page="payments"><span class="ic">💰</span> Payment Status</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">More</div>
+    <div class="nav-item" data-page="menu"><span class="ic">🍽️</span> Menu Plans</div>
+    <div class="nav-item" data-page="reports"><span class="ic">📈</span> Monthly Report</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="page-title">Asan Tiffin</div>
+      <div class="tb-date" id="today-date"></div>
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-primary btn-sm" id="action-btn">➕ New Order</button>
+      <div class="avatar">AT</div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="page active" id="page-dashboard">
+    <!-- Simple Banner -->
+    <div style="background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:16px;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(255,107,0,.25)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:36px">🍱</div>
+        <div>
+          <div style="font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:#fff">Asan Tiffin</div>
+          <div style="color:rgba(255,255,255,.85);font-size:12px">Asan Ghar Ka Khana — Ghar Jaisa Swad</div>
+        </div>
+      </div>
+      <div id="banner-date" style="font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:#fff;background:rgba(255,255,255,.2);border-radius:10px;padding:8px 14px"></div>
+    </div>
+
+    <!-- 4 Stat Cards -->
+    <div class="stat-grid" style="margin-bottom:20px">
+      <div class="stat-card sc-orange" style="text-align:center;padding:22px 12px">
+        <div style="font-size:32px;margin-bottom:8px">📦</div>
+        <div class="stat-val" id="s-orders">0</div>
+        <div class="stat-label">Aaj ke Orders</div>
+      </div>
+      <div class="stat-card sc-green" style="text-align:center;padding:22px 12px">
+        <div style="font-size:32px;margin-bottom:8px">👥</div>
+        <div class="stat-val" id="s-customers">0</div>
+        <div class="stat-label">Total Customers</div>
+      </div>
+      <div class="stat-card sc-gold" style="text-align:center;padding:22px 12px">
+        <div style="font-size:32px;margin-bottom:8px">💰</div>
+        <div class="stat-val" id="s-revenue">₹0</div>
+        <div class="stat-label">Is Mahine Revenue</div>
+      </div>
+      <div class="stat-card sc-red" style="text-align:center;padding:22px 12px">
+        <div style="font-size:32px;margin-bottom:8px">🛵</div>
+        <div class="stat-val" id="s-pending">0</div>
+        <div class="stat-label">Delivery Baaki</div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">⚡ Quick Actions</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <button onclick="document.querySelector('[data-page=orders]').click();setTimeout(function(){openModal('modal-order')},100)" style="background:linear-gradient(135deg,var(--saffron),var(--turmeric));color:#fff;border:none;border-radius:12px;padding:16px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(255,107,0,.25)">
+          <div style="font-size:26px;margin-bottom:6px">➕</div>New Order
+        </button>
+        <button onclick="document.querySelector('[data-page=customers]').click();setTimeout(function(){openModal('modal-customer')},100)" style="background:linear-gradient(135deg,var(--leaf),var(--mint));color:#fff;border:none;border-radius:12px;padding:16px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(45,106,79,.25)">
+          <div style="font-size:26px;margin-bottom:6px">👤</div>Add Customer
+        </button>
+        <button onclick="document.querySelector('[data-page=payments]').click();setTimeout(function(){openModal('modal-payment')},100)" style="background:linear-gradient(135deg,var(--gold),#E67E22);color:#fff;border:none;border-radius:12px;padding:16px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(243,156,18,.25)">
+          <div style="font-size:26px;margin-bottom:6px">💵</div>Add Payment
+        </button>
+        <button onclick="document.querySelector('[data-page=delivery]').click()" style="background:linear-gradient(135deg,var(--blue),#1A5276);color:#fff;border:none;border-radius:12px;padding:16px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(41,128,185,.25)">
+          <div style="font-size:26px;margin-bottom:6px">🛵</div>Track Delivery
+        </button>
+      </div>
+    </div>
+
+    <!-- Today Orders + Pending Payments -->
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">📋 Aaj ke Orders</div>
+        <table><thead><tr><th>Customer</th><th>Plan</th><th>Status</th><th>₹</th></tr></thead>
+        <tbody id="dash-orders"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-title">💰 Payment Due List</div>
+        <div id="dash-due-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">👩 Ladies Class — Aaj</div>
+        <div id="dash-class"></div>
+      </div>
+    </div>
+
+    <!-- Chart + Menu Preview -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📈 Is Hafte ke Orders</div>
+        <div class="bar-chart" id="dash-chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🍽️ Aaj ka Menu</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F5F5F5">
+          <span style="font-size:22px">🥘</span>
+          <div><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase">Sabji 1 (Dry)</div><div style="font-weight:700" id="dm-s1">Aloo Gobi</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F5F5F5">
+          <span style="font-size:22px">🍲</span>
+          <div><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase">Sabji 2 (Gravy)</div><div style="font-weight:700" id="dm-s2">Dal Makhani</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F5F5F5">
+          <span style="font-size:22px">🍚</span>
+          <div><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase">Chaval</div><div style="font-weight:700" id="dm-ch">Jeera Rice</div></div>
+        </div>
+        <div style="padding-top:14px;display:flex;gap:8px">
+          <button class="btn btn-wa btn-sm" onclick="sendMenuWA()">💬 Share Menu</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.querySelector('[data-page=menu]').click()">✏️ Edit Menu</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <!-- ===== CUSTOMERS ===== -->
+  <div class="page" id="page-customers">
+    <div class="pg-header">
+      <div><div class="pg-sub">Manage tiffin subscribers</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="openModal('modal-import-csv')">📥 Import CSV</button>
+        <button class="btn btn-primary" onclick="openModal('modal-customer')">➕ Add Customer</button>
+      </div>
+    </div>
+    <div class="search-row">
+      <input class="search-input" type="text" placeholder="Search customers..." oninput="renderCustomers(this.value)">
+      <select class="form-input form-select" style="width:160px" onchange="renderCustomers(document.querySelector('#page-customers .search-input').value,this.value)">
+        <option value="">All Plans</option><option value="Full">Full Tiffin</option><option value="Half3">Half (3 Roti)</option><option value="Half2">Half (2 Roti)</option>
+      </select>
+    </div>
+    <div class="card">
+      <table><thead><tr><th>Customer</th><th>Phone</th><th>Plan</th><th>Type</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="cust-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===== ORDERS ===== -->
+  <div class="page" id="page-orders">
+    <div class="pg-header">
+      <div><div class="pg-sub">All tiffin orders</div></div>
+      <button class="btn btn-primary" onclick="openModal('modal-order')">➕ New Order</button>
+    </div>
+    <div class="search-row">
+      <input class="search-input" type="text" placeholder="Search orders..." oninput="renderOrders(this.value)">
+      <select class="form-input form-select" style="width:150px" onchange="renderOrders(document.querySelector('#page-orders .search-input').value,this.value)">
+        <option value="">All Status</option><option value="Pending">Pending</option><option value="Preparing">Preparing</option><option value="Out for Delivery">Out for Delivery</option><option value="Delivered">Delivered</option><option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="card">
+      <table><thead><tr><th>Order ID</th><th>Customer</th><th>Plan</th><th>Type</th><th>Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead>
+      <tbody id="orders-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===== DELIVERY TRACK ===== -->
+  <div class="page" id="page-delivery">
+    <div class="pg-header">
+      <div><div class="pg-sub">Track deliveries &amp; notify customers</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="pill p-green">✅ Delivered: <span id="del-done">0</span></span>
+        <span class="pill p-yellow">⏳ Pending: <span id="del-pending">0</span></span>
+      </div>
+    </div>
+
+    <!-- Message Templates -->
+    <div class="card">
+      <div class="card-title">💬 Message Templates &amp; Bulk Send</div>
+      <div class="tmpl-grid">
+        <div class="tmpl-card" style="background:#FFF3CD;border-color:#FFC107" onclick="setTmpl('preparing')"><div style="font-size:22px">👨‍🍳</div><div style="font-size:12px;font-weight:700;margin-top:5px">Preparing</div><div style="font-size:10px;color:#888">Khana ban raha hai</div></div>
+        <div class="tmpl-card" style="background:#E8F4FD;border-color:#2980B9" onclick="setTmpl('otw')"><div style="font-size:22px">🛵</div><div style="font-size:12px;font-weight:700;margin-top:5px">On the Way</div><div style="font-size:10px;color:#888">Tiffin raste mein</div></div>
+        <div class="tmpl-card" style="background:#E8F8EE;border-color:#27AE60" onclick="setTmpl('delivered')"><div style="font-size:22px">✅</div><div style="font-size:12px;font-weight:700;margin-top:5px">Delivered</div><div style="font-size:10px;color:#888">Tiffin pahunch gaya</div></div>
+        <div class="tmpl-card" style="background:#FDEDEC;border-color:#E74C3C" onclick="setTmpl('payment')"><div style="font-size:22px">💰</div><div style="font-size:12px;font-weight:700;margin-top:5px">Payment Due</div><div style="font-size:10px;color:#888">Bhugtan baaki hai</div></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">✏️ Message</label>
+        <textarea class="form-input" id="bulk-msg" rows="3" placeholder="Message likhein ya template chunein...">Namaste! Aapka Asan Ghar Ka Khana tiffin tayar ho raha hai. Jald deliver hoga! 🍱 - Asan Tiffin</textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <select class="form-input form-select" id="msg-cust" style="flex:1;min-width:180px">
+          <option value="all">📢 All Active Customers</option>
+        </select>
+        <button class="btn btn-wa" onclick="bulkWhatsApp()">💬 WhatsApp</button>
+        <button class="btn btn-sms" onclick="bulkSMS()">📱 SMS</button>
+      </div>
+    </div>
+
+    <!-- Delivery Cards -->
+    <div class="card">
+      <div class="card-title">🗺️ Today's Deliveries</div>
+      <div id="del-list"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAYMENTS ===== -->
+  <div class="page" id="page-payments">
+    <div class="pg-header">
+      <div><div class="pg-sub">Customer payment status &amp; balance</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" onclick="openModal('modal-payment')">💰 Add Payment</button>
+        <button class="btn btn-wa btn-sm" onclick="sendPayReminder()">💬 Send Reminder</button>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card sc-green"><div class="stat-icon">💵</div><div class="stat-val" id="p-received">₹0</div><div class="stat-label">Total Received</div></div>
+      <div class="stat-card sc-red"><div class="stat-icon">⏳</div><div class="stat-val" id="p-due">₹0</div><div class="stat-label">Total Due</div></div>
+      <div class="stat-card sc-gold"><div class="stat-icon">📅</div><div class="stat-val" id="p-month">₹0</div><div class="stat-label">This Month</div></div>
+      <div class="stat-card sc-orange"><div class="stat-icon">👥</div><div class="stat-val" id="p-due-count">0</div><div class="stat-label">Customers with Due</div></div>
+    </div>
+    <!-- Status Table -->
+    <div class="card">
+      <div class="card-title">📊 Customer Payment Status</div>
+      <div class="search-row">
+        <input class="search-input" type="text" placeholder="Search customer..." oninput="renderPayStatus(this.value)">
+        <select class="form-input form-select" style="width:160px" onchange="renderPayStatus(document.querySelector('#page-payments .search-input').value,this.value)" id="pay-filter">
+          <option value="">All</option><option value="paid">✅ Fully Paid</option><option value="partial">⚠️ Partial</option><option value="due">❌ Due</option>
+        </select>
+      </div>
+      <table><thead><tr><th>Customer</th><th>Plan</th><th>Monthly</th><th>Paid</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="pay-status-table"></tbody></table>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">💳 Payment History</div>
+        <div id="pay-history"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📈 Monthly Collection</div>
+        <div class="bar-chart" id="pay-chart" style="height:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MENU ===== -->
+  <div class="page" id="page-menu">
+    <div class="pg-header"><div><div class="pg-sub">Monthly subscription plans</div></div></div>
+    <div style="background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:18px;padding:20px 26px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(255,107,0,.3)">
+      <div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;color:#fff">🗓️ Monthly Tiffin Plans</div>
+        <div style="color:rgba(255,255,255,.85);font-size:13px;margin-top:3px">Asan Ghar Ka Khana — Daily fresh tiffin, subscribe monthly!</div>
+      </div>
+      <div style="background:rgba(255,255,255,.2);border-radius:11px;padding:10px 16px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,.8);font-weight:600;text-transform:uppercase;letter-spacing:1px">Per Day</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;color:#fff">₹50 – ₹83</div>
+      </div>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card featured">
+        <span class="pill p-orange" style="position:absolute;top:14px;right:14px">⭐ Best Value</span>
+        <div style="font-size:38px;margin-bottom:10px">🍛</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">Monthly Plan A</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:var(--saffron);margin-bottom:2px">₹2,500<span style="font-size:13px;color:#888;font-weight:400">/month</span></div>
+        <div style="font-size:11px;color:var(--saffron);font-weight:700;margin-bottom:12px">≈ ₹83/day</div>
+        <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:13px;line-height:2">🫓 <b>4 Roti</b><br>🥘 <b>1 Sabji</b> (Dry)<br>🍲 <b>1 Sabji</b> (Gravy)<br>🍚 <b>1 Chaval</b></div>
+        <div style="display:flex;gap:8px;margin-top:12px"><span class="veg">🌿 Veg</span><span class="nonveg">🍗 Non-Veg</span></div>
+      </div>
+      <div class="menu-card">
+        <div style="font-size:38px;margin-bottom:10px">🍱</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">Monthly Plan B</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:var(--saffron);margin-bottom:2px">₹2,000<span style="font-size:13px;color:#888;font-weight:400">/month</span></div>
+        <div style="font-size:11px;color:var(--saffron);font-weight:700;margin-bottom:12px">≈ ₹67/day</div>
+        <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:13px;line-height:2">🫓 <b>3 Roti</b><br>🥘 <b>1 Sabji</b> (Dry)<br>🍲 <b>1 Sabji</b> (Gravy)<br>🍚 <b>1 Chaval</b></div>
+        <div style="display:flex;gap:8px;margin-top:12px"><span class="veg">🌿 Veg</span><span class="nonveg">🍗 Non-Veg</span></div>
+      </div>
+      <div class="menu-card">
+        <div style="font-size:38px;margin-bottom:10px">🥗</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">Monthly Plan C</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:var(--saffron);margin-bottom:2px">₹1,500<span style="font-size:13px;color:#888;font-weight:400">/month</span></div>
+        <div style="font-size:11px;color:var(--saffron);font-weight:700;margin-bottom:12px">≈ ₹50/day</div>
+        <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:13px;line-height:2">🫓 <b>2 Roti</b><br>🥘 <b>1 Sabji</b> (Dry)<br>🍲 <b>1 Sabji</b> (Gravy)<br>🍚 <b>1 Chaval</b></div>
+        <div style="display:flex;gap:8px;margin-top:12px"><span class="veg">🌿 Veg</span><span class="nonveg">🍗 Non-Veg</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Plan Comparison</div>
+      <table><thead><tr><th>Plan</th><th>Roti</th><th>Sabji Dry</th><th>Sabji Gravy</th><th>Chaval</th><th>Monthly</th><th>Per Day</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr style="background:#FFF8F0"><td><b style="color:var(--saffron)">Plan A ⭐</b></td><td><b>4</b></td><td>✅</td><td>✅</td><td>✅</td><td><b style="color:var(--saffron)">₹2,500</b></td><td>₹83</td><td><span class="veg">Veg</span> <span class="nonveg">NV</span></td></tr>
+        <tr><td><b>Plan B</b></td><td><b>3</b></td><td>✅</td><td>✅</td><td>✅</td><td><b>₹2,000</b></td><td>₹67</td><td><span class="veg">Veg</span> <span class="nonveg">NV</span></td></tr>
+        <tr><td><b>Plan C</b></td><td><b>2</b></td><td>✅</td><td>✅</td><td>✅</td><td><b>₹1,500</b></td><td>₹50</td><td><span class="veg">Veg</span> <span class="nonveg">NV</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title">🗓️ Today's Menu</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">🥘 Sabji 1 (Dry)</label><input class="form-input" id="menu-s1" type="text" value="Aloo Gobi"></div>
+        <div class="form-group"><label class="form-label">🍲 Sabji 2 (Gravy)</label><input class="form-input" id="menu-s2" type="text" value="Dal Makhani"></div>
+        <div class="form-group"><label class="form-label">🍚 Chaval</label><input class="form-input" id="menu-ch" type="text" value="Jeera Rice"></div>
+        <div class="form-group"><label class="form-label">🍮 Special</label><input class="form-input" id="menu-sp" type="text" placeholder="Raita, Papad..."></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="saveMenu()">💾 Save Menu</button>
+        <button class="btn btn-wa" onclick="sendMenuWA()">💬 Share on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REPORTS ===== -->
+  <div class="page" id="page-reports">
+    <div class="pg-header">
+      <div><div class="pg-sub">Monthly order analysis</div></div>
+      <select class="form-input form-select" style="width:160px" id="rep-month"></select>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card sc-orange"><div class="stat-icon">📦</div><div class="stat-val" id="r-orders">0</div><div class="stat-label">Total Orders</div></div>
+      <div class="stat-card sc-green"><div class="stat-icon">✅</div><div class="stat-val" id="r-del">0</div><div class="stat-label">Delivered</div></div>
+      <div class="stat-card sc-gold"><div class="stat-icon">💰</div><div class="stat-val" id="r-rev">₹0</div><div class="stat-label">Revenue</div></div>
+      <div class="stat-card sc-red"><div class="stat-icon">❌</div><div class="stat-val" id="r-can">0</div><div class="stat-label">Cancelled</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">📊 Daily Orders</div><div class="bar-chart" id="rep-chart"></div></div>
+      <div class="card"><div class="card-title">🍽️ Plan Distribution</div><div id="rep-plans"></div></div>
+    </div>
+    <div class="card"><div class="card-title">🏆 Top Customers</div>
+      <table><thead><tr><th>Customer</th><th>Orders</th><th>Plan</th><th>Paid</th><th>Due</th></tr></thead>
+      <tbody id="rep-top"></tbody></table>
+    </div>
+  </div>
+</div><!-- end main -->
+</div><!-- end shell -->
+
+<!-- ===== MODALS ===== -->
+<div class="modal-overlay" id="modal-customer">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">👤 Add Customer</div><button class="modal-close" onclick="closeModal('modal-customer')">✕</button></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="c-name" placeholder="Customer name"></div>
+      <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="c-phone" type="tel" placeholder="Mobile number"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Address *</label><textarea class="form-input" id="c-addr" rows="2" placeholder="Delivery address"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Plan *</label>
+        <select class="form-input form-select" id="c-plan">
+          <option value="Full">Full Tiffin — ₹2,500</option>
+          <option value="Half3">Half Tiffin (3 Roti) — ₹2,000</option>
+          <option value="Half2">Half Tiffin (2 Roti) — ₹1,500</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Type *</label>
+        <select class="form-input form-select" id="c-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" id="c-start" type="date"></div>
+      <div class="form-group"><label class="form-label">Initial Payment ₹</label><input class="form-input" id="c-pay" type="number" placeholder="0"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('modal-customer')">Cancel</button>
+      <button class="btn btn-primary" onclick="addCustomer()">✅ Add Customer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-order">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">📦 New Order</div><button class="modal-close" onclick="closeModal('modal-order')">✕</button></div>
+    <div class="form-group"><label class="form-label">Customer *</label><select class="form-input form-select" id="o-cust"><option value="">Select customer...</option></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Plan *</label>
+        <select class="form-input form-select" id="o-plan" onchange="updateOAmt()">
+          <option value="Full">Full Tiffin — ₹2,500</option>
+          <option value="Half3">Half (3 Roti) — ₹2,000</option>
+          <option value="Half2">Half (2 Roti) — ₹1,500</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Type</label><select class="form-input form-select" id="o-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="o-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Amount ₹</label><input class="form-input" id="o-amt" type="number" readonly style="background:#F8F8F8"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="o-notes" placeholder="Special instructions..."></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('modal-order')">Cancel</button>
+      <button class="btn btn-primary" onclick="addOrder()">✅ Place Order</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-payment">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">💰 Add Payment</div><button class="modal-close" onclick="closeModal('modal-payment')">✕</button></div>
+    <div class="form-group"><label class="form-label">Customer *</label><select class="form-input form-select" id="p-cust"><option value="">Select customer...</option></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Type</label>
+        <select class="form-input form-select" id="p-type"><option value="credit">💵 Payment Received</option><option value="debit">📤 Deduction</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Amount ₹ *</label><input class="form-input" id="p-amt" type="number" placeholder="Enter amount"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Method</label>
+      <select class="form-input form-select" id="p-method"><option value="Cash">💵 Cash</option><option value="UPI">📱 UPI</option><option value="Bank Transfer">🏦 Bank Transfer</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="p-note" placeholder="e.g. Monthly payment"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('modal-payment')">Cancel</button>
+      <button class="btn btn-primary" onclick="addPayment()">✅ Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== IMPORT CSV MODAL ===== -->
+<div class="modal-overlay" id="modal-import-csv">
+  <div class="modal" style="max-width:560px;width:95%">
+    <div class="modal-header">
+      <div class="modal-title">📥 Customers Import Karein (CSV)</div>
+      <button class="modal-close" onclick="closeModal('modal-import-csv')">✕</button>
+    </div>
+
+    <!-- Format Guide -->
+    <div style="background:#EEF6FF;border-radius:12px;padding:14px;margin-bottom:16px;border-left:4px solid var(--blue)">
+      <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:8px">📋 CSV Format (Column Names):</div>
+      <div style="font-family:monospace;font-size:11px;background:#fff;border-radius:8px;padding:10px;color:#333;line-height:1.8">
+        <b>Name</b> (zaruri) — Customer ka poora naam<br>
+        <b>Phone</b> (zaruri) — Mobile number<br>
+        <b>Address</b> — Delivery address<br>
+        <b>Type</b> — <span style="color:green">Veg</span> ya <span style="color:red">Non-Veg</span> (default: Veg)<br>
+        <b>Plan</b> — Full / Half3 / Half2 (default: Full)<br>
+        <b>Payment</b> — Initial payment amount (default: 0)
+      </div>
+    </div>
+
+    <!-- Sample Download -->
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <button class="btn btn-secondary btn-sm" onclick="downloadSampleCSV()">⬇️ Sample CSV Download Karein</button>
+      <span style="font-size:12px;color:#888">← Example file dekhein</span>
+    </div>
+
+    <!-- File Upload -->
+    <div style="border:2px dashed #DDD;border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;cursor:pointer;transition:.2s" id="csv-drop-zone" onclick="document.getElementById('csv-file-input').click()">
+      <div style="font-size:36px;margin-bottom:8px">📂</div>
+      <div style="font-weight:700;color:#555;margin-bottom:4px">CSV File Choose Karein</div>
+      <div style="font-size:12px;color:#aaa">Ya file yahan drag & drop karein</div>
+      <input type="file" id="csv-file-input" accept=".csv,.txt" style="display:none" onchange="handleCSVFile(this)">
+    </div>
+
+    <!-- Preview Table -->
+    <div id="csv-preview" style="display:none;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--dark)">👁️ Preview — <span id="csv-count">0</span> customers milenge:</div>
+      <div style="max-height:200px;overflow-y:auto;border-radius:10px;border:1px solid #EEE">
+        <table style="width:100%;font-size:12px">
+          <thead><tr style="background:#F8F8F8"><th>Naam</th><th>Phone</th><th>Type</th><th>Plan</th><th>Status</th></tr></thead>
+          <tbody id="csv-preview-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Error box -->
+    <div id="csv-errors" style="display:none;background:#FDEDEC;border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:#E74C3C"></div>
+
+    <!-- Action Buttons -->
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('modal-import-csv');resetCSVImport()">Cancel</button>
+      <button class="btn btn-primary" id="csv-import-btn" style="display:none" onclick="doImportCSV()">✅ Import Karein</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CUSTOMER DETAIL MODAL ===== -->
+<div class="modal-overlay" id="modal-cust-detail">
+  <div class="modal" style="max-width:620px;width:95%">
+    <div class="modal-header">
+      <div class="modal-title">👤 Customer Details</div>
+      <button class="modal-close" onclick="closeModal('modal-cust-detail')">✕</button>
+    </div>
+
+    <!-- Profile Card -->
+    <div id="cd-profile" style="background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:14px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+      <div id="cd-avatar" style="width:54px;height:54px;background:rgba(255,255,255,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div id="cd-name" style="font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;color:#fff"></div>
+        <div id="cd-sub" style="color:rgba(255,255,255,.85);font-size:12px;margin-top:2px"></div>
+      </div>
+      <div id="cd-status-pill"></div>
+    </div>
+
+    <!-- Info Grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="background:var(--cream);border-radius:11px;padding:13px">
+        <div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📞 Phone</div>
+        <div id="cd-phone" style="font-weight:700;font-size:14px"></div>
+      </div>
+      <div style="background:var(--cream);border-radius:11px;padding:13px">
+        <div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🍽️ Plan</div>
+        <div id="cd-plan" style="font-weight:700;font-size:14px"></div>
+      </div>
+      <div style="background:var(--cream);border-radius:11px;padding:13px">
+        <div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📍 Address</div>
+        <div id="cd-addr" style="font-weight:600;font-size:13px"></div>
+      </div>
+      <div style="background:var(--cream);border-radius:11px;padding:13px">
+        <div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📅 Member Since</div>
+        <div id="cd-since" style="font-weight:700;font-size:14px"></div>
+      </div>
+    </div>
+
+    <!-- Payment Summary -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px" id="cd-pay-summary"></div>
+
+    <!-- Bill Send Buttons -->
+    <div style="background:#F8F8F8;border-radius:12px;padding:14px;margin-bottom:18px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--dark)">📤 Bill Bhejein</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-wa btn-sm" id="cd-wa-btn">💬 WhatsApp Bill</button>
+        <button class="btn btn-sms btn-sm" id="cd-sms-btn">📱 SMS Bill</button>
+        <button class="btn btn-success btn-sm" onclick="openPayFromDetail()">💰 Payment Add Karein</button>
+      </div>
+      <div style="margin-top:10px;background:#fff;border-radius:9px;padding:10px;font-size:12px;color:#555;font-style:italic;border:1px solid #EEE" id="cd-bill-preview"></div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--dark)">📦 Recent Orders</div>
+      <div id="cd-orders"></div>
+    </div>
+
+    <!-- Payment History -->
+    <div style="margin-top:16px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--dark)">💳 Payment History</div>
+      <div id="cd-payments"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+// ===== LOAD FROM FIREBASE (Akshay ki app ka data) =====
+var FB_URL='https://asan-tiffin-87dde-default-rtdb.firebaseio.com/asanData.json';
+var _ac=[],_ao=[],_ap=[],_classAtt={};
+
+function mapPlan(amt){
+  if(amt>=2500) return 'Full';
+  if(amt>=2000) return 'Half3';
+  return 'Half2';
+}
+
+function loadFromFirebase(callback){
+  fetch(FB_URL)
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(!data){callback();return;}
+    _ac=data.customers||[];
+    _ao=data.orders||[];
+    _ap=data.payments||[];
+    _classAtt=data.classAtt||{};
+    buildData();
+    callback();
+  })
+  .catch(function(){
+    // Firebase nahi mila — local fallback
+    callback();
+  });
+}
+
+function buildData(){
+  var n=new Date(),mo=n.getMonth(),yr=n.getFullYear();
+  customers=_ac.map(function(c){
+    var paid=0,deliveredAmt=0;
+    _ap.forEach(function(p){var pd=new Date(p.date);if(p.custId===c.id&&pd.getMonth()===mo&&pd.getFullYear()===yr)paid+=p.amount;});
+    _ao.forEach(function(o){var od=new Date(o.date);if(o.custId===c.id&&o.status==='Delivered'&&od.getMonth()===mo&&od.getFullYear()===yr)deliveredAmt+=o.amount;});
+    return {id:c.id,name:c.name,phone:c.phone,addr:c.address||c.zone||'',plan:mapPlan(c.plan||0),type:c.type||'Veg',start:c.startDate||'',status:'Active',paid:paid,balance:Math.max(0,deliveredAmt-paid)};
+  });
+  orders=_ao.filter(function(o){return !o.isChutti;}).map(function(o){
+    var c=_ac.find(function(x){return x.id===o.custId;});
+    var st=o.status==='On the Way'?'Out for Delivery':o.status;
+    return {id:'ORD'+o.id,cid:o.custId,plan:c?mapPlan(c.plan||0):'Half2',type:o.type||'Veg',date:o.date,status:st,amt:o.amount||0};
+  });
+  payments=_ap.map(function(p){
+    return {id:p.id,cid:p.custId,type:'credit',amt:p.amount,method:p.method||'Cash',note:p.note||'',date:p.date};
+  });
+  classAtt=_classAtt;
+}
+
+var customers=[],orders=[],payments=[],classAtt={};
+
+var planPrices = {Full:2500, Half3:2000, Half2:1500};
+var planNames = {Full:'Full Tiffin', Half3:'Half Tiffin (3 Roti)', Half2:'Half Tiffin (2 Roti)'};
+var STEPS = ['Order Placed','Preparing','Out for Delivery','Delivered'];
+var stepIdx = {Pending:0,Preparing:1,'Out for Delivery':2,Delivered:3,Cancelled:0};
+var nextStatus = {Pending:'Preparing',Preparing:'Out for Delivery','Out for Delivery':'Delivered'};
+var statusPill = {
+  Delivered:'p-green',Pending:'p-yellow',Preparing:'p-yellow',
+  'Out for Delivery':'p-blue',Cancelled:'p-red'
+};
+
+// ===== NAVIGATION =====
+document.querySelectorAll('.nav-item').forEach(function(ni) {
+  ni.addEventListener('click', function() {
+    var pg = ni.getAttribute('data-page');
+    document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});
+    ni.classList.add('active');
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+    var pageEl = document.getElementById('page-'+pg);
+    if(pageEl) pageEl.classList.add('active');
+    var titles = {dashboard:'Asan Tiffin',customers:'Customers',orders:'Orders',delivery:'Delivery Track',payments:'Payment Status',menu:'Menu Plans',reports:'Monthly Report'};
+    var actions = {dashboard:'➕ New Order',customers:'➕ Add Customer',orders:'➕ New Order',delivery:'',payments:'💰 Add Payment',menu:'',reports:''};
+    document.getElementById('page-title').textContent = titles[pg]||pg;
+    var btn = document.getElementById('action-btn');
+    if(actions[pg]){btn.style.display='';btn.textContent=actions[pg];}else{btn.style.display='none';}
+    if(pg==='dashboard') renderDash();
+    if(pg==='customers') renderCustomers();
+    if(pg==='orders') renderOrders();
+    if(pg==='delivery') renderDelivery();
+    if(pg==='payments') renderPayments();
+    if(pg==='reports') renderReports();
+  });
+});
+
+document.getElementById('action-btn').addEventListener('click', function() {
+  var pg = document.getElementById('page-title').textContent;
+  if(pg==='Customers') openModal('modal-customer');
+  else if(pg==='Payment Status') openModal('modal-payment');
+  else openModal('modal-order');
+});
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  populateDropdowns();
+  var t = new Date().toISOString().split('T')[0];
+  var cs = document.getElementById('c-start');
+  var od = document.getElementById('o-date');
+  if(cs) cs.value = t;
+  if(od) od.value = t;
+  updateOAmt();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(m) {
+  m.addEventListener('click', function(e){ if(e.target===m) m.classList.remove('open'); });
+});
+function populateDropdowns() {
+  ['o-cust','p-cust'].forEach(function(sid) {
+    var s = document.getElementById(sid);
+    if(!s) return;
+    s.innerHTML = '<option value="">Select customer...</option>' + customers.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
+  });
+  var ms = document.getElementById('msg-cust');
+  if(ms) ms.innerHTML = '<option value="all">📢 All Active Customers</option>' + customers.map(function(c){ return '<option value="'+c.id+'">'+c.name+' ('+c.phone+')</option>'; }).join('');
+}
+function updateOAmt() {
+  var p = document.getElementById('o-plan');
+  var a = document.getElementById('o-amt');
+  if(p&&a) a.value = planPrices[p.value]||0;
+}
+
+// ===== CUSTOMER CRUD =====
+function addCustomer() {
+  var name = document.getElementById('c-name').value.trim();
+  var phone = document.getElementById('c-phone').value.trim();
+  var addr = document.getElementById('c-addr').value.trim();
+  var plan = document.getElementById('c-plan').value;
+  var type = document.getElementById('c-type').value;
+  var start = document.getElementById('c-start').value;
+  var initPay = parseFloat(document.getElementById('c-pay').value)||0;
+  if(!name||!phone||!addr){ toast('⚠️ Required fields fill karein','#E74C3C'); return; }
+  var price = planPrices[plan];
+  var c = {id:Date.now(),name:name,phone:phone,addr:addr,plan:plan,type:type,start:start,status:'Active',paid:initPay,balance:price-initPay};
+  customers.push(c);
+  if(initPay>0) payments.push({id:Date.now(),cid:c.id,type:'credit',amt:initPay,method:'Cash',note:'Initial payment',date:start||new Date().toISOString().split('T')[0]});
+  closeModal('modal-customer');
+  renderCustomers();
+  toast('✅ Customer add ho gaya!');
+  ['c-name','c-phone','c-addr','c-pay'].forEach(function(i){ var el=document.getElementById(i); if(el) el.value=''; });
+}
+function delCustomer(id) {
+  if(!confirm('Delete this customer?')) return;
+  customers = customers.filter(function(c){return c.id!==id;});
+  renderCustomers();
+  toast('🗑️ Customer delete ho gaya','#E74C3C');
+}
+
+// ===== ORDER CRUD =====
+function addOrder() {
+  var cid = parseInt(document.getElementById('o-cust').value);
+  var plan = document.getElementById('o-plan').value;
+  var type = document.getElementById('o-type').value;
+  var date = document.getElementById('o-date').value;
+  var notes = document.getElementById('o-notes').value;
+  if(!cid||!date){ toast('⚠️ Required fields fill karein','#E74C3C'); return; }
+  var oid = 'ORD'+String(orders.length+1).padStart(3,'0');
+  orders.push({id:oid,cid:cid,plan:plan,type:type,date:date,status:'Pending',amt:Math.round(planPrices[plan]/30)});
+  closeModal('modal-order');
+  renderOrders(); renderDash();
+  document.getElementById('pending-badge').textContent = orders.filter(function(o){return o.status==='Pending';}).length;
+  toast('✅ Order place ho gaya!');
+}
+function updateStatus(id, status) {
+  var o = orders.find(function(x){return x.id===id;});
+  if(!o) return;
+  o.status = status;
+  renderOrders();
+  renderDelivery();
+  document.getElementById('pending-badge').textContent = orders.filter(function(o){return o.status==='Pending';}).length;
+
+  // Auto-send status notification to customer
+  var c = customers.find(function(x){return x.id===o.cid;});
+  if(!c) { toast('Status updated: '+status); return; }
+
+  var emojis = {'Pending':'📋','Preparing':'👨‍🍳','Out for Delivery':'🛵','Delivered':'✅','Cancelled':'❌'};
+  var msgs = {
+    'Pending':       'Namaste '+c.name+'ji! 🙏\nAapka Asan Tiffin order confirm ho gaya hai! Hum jald tayaar karenge.\n\n'+emojis['Pending']+' Status: Order Confirm\n📅 Date: '+o.date+'\n🍽️ Plan: '+planNames[o.plan]+'\n💰 Amount: Rs.'+o.amt+'\n\nDhanyawad! - Asan Ghar Ka Khana',
+    'Preparing':     'Namaste '+c.name+'ji! 👨‍🍳\nAapka swaadisht Asan Tiffin ban raha hai! Thodi der mein taiyaar ho jayega.\n\n🔄 Status: Ban Raha Hai...\n📅 Date: '+o.date+'\n🍽️ Plan: '+planNames[o.plan]+'\n\nDhanyawad! - Asan Ghar Ka Khana',
+    'Out for Delivery': 'Namaste '+c.name+'ji! 🛵\nAapka Asan Tiffin raste mein hai! Kuch hi der mein pahunch jayega.\n\n🚀 Status: Delivery Ho Rahi Hai!\n📅 Date: '+o.date+'\n🍽️ Plan: '+planNames[o.plan]+'\n\nPlease phone paas rakhein! - Asan Ghar Ka Khana',
+    'Delivered':     'Namaste '+c.name+'ji! ✅\nAapka Asan Tiffin pahunch gaya! Khana ka aanand lijiye.\n\n✅ Status: Deliver Ho Gaya!\n📅 Date: '+o.date+'\n🍽️ Plan: '+planNames[o.plan]+'\n\nSwad lijiye aur feedback zaroor dein! 🙏\n- Asan Ghar Ka Khana',
+    'Cancelled':     'Namaste '+c.name+'ji!\nAapka Asan Tiffin order cancel ho gaya hai.\n\n❌ Status: Cancel\n📅 Date: '+o.date+'\n\nKisi bhi pareshani ke liye sampark karein.\n- Asan Ghar Ka Khana'
+  };
+  var msgText = msgs[status] || ('Aapka order status update hua: '+status);
+  var ph = c.phone.startsWith('91') ? c.phone : '91'+c.phone;
+  var enc = encodeURIComponent(msgText);
+
+  // Show notification modal
+  openStatusNotifyModal(c, status, emojis[status]||'📦', msgText, ph, enc);
+}
+
+function openStatusNotifyModal(c, status, emoji, msgText, ph, enc) {
+  // Remove existing modal if any
+  var existing = document.getElementById('modal-status-notify');
+  if(existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'modal-status-notify';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px';
+  modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+    + '<div style="text-align:center;margin-bottom:16px">'
+    + '<div style="font-size:42px;margin-bottom:8px">'+emoji+'</div>'
+    + '<div style="font-family:Baloo 2,sans-serif;font-size:18px;font-weight:800;color:#1a1a2e">Status Updated!</div>'
+    + '<div style="font-size:13px;color:#888;margin-top:4px">'+c.name+' ko notification bhejein?</div>'
+    + '</div>'
+    + '<div style="background:#F8F9FA;border-radius:12px;padding:14px;margin-bottom:16px;font-size:12px;color:#555;line-height:1.7;max-height:150px;overflow-y:auto;white-space:pre-wrap">'+msgText+'</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+    + '<a href="https://wa.me/'+ph+'?text='+enc+'" target="_blank" onclick="toast(\'💬 WhatsApp bheja — '+c.name+'\')" style="display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#fff;border-radius:12px;padding:13px;font-weight:700;font-size:14px;text-decoration:none">💬 WhatsApp</a>'
+    + '<a href="sms:'+c.phone+'?body='+enc+'" onclick="toast(\'📱 SMS bheja — '+c.name+'\')" style="display:flex;align-items:center;justify-content:center;gap:7px;background:#007AFF;color:#fff;border-radius:12px;padding:13px;font-weight:700;font-size:14px;text-decoration:none">📱 SMS</a>'
+    + '</div>'
+    + '<button onclick="document.getElementById(\'modal-status-notify\').remove();toast(\'✅ Status Update: '+status+'\')" style="width:100%;background:#F0F0F0;border:none;border-radius:12px;padding:12px;font-family:Poppins,sans-serif;font-weight:600;font-size:14px;cursor:pointer;color:#555">Skip Karein</button>'
+    + '</div>';
+  document.body.appendChild(modal);
+  modal.addEventListener('click', function(e){ if(e.target===modal){ modal.remove(); } });
+}
+
+// ===== PAYMENT =====
+function addPayment() {
+  var cid = parseInt(document.getElementById('p-cust').value);
+  var type = document.getElementById('p-type').value;
+  var amt = parseFloat(document.getElementById('p-amt').value);
+  var method = document.getElementById('p-method').value;
+  var note = document.getElementById('p-note').value;
+  if(!cid||!amt){ toast('⚠️ Fill karein','#E74C3C'); return; }
+  payments.push({id:Date.now(),cid:cid,type:type,amt:amt,method:method,note:note,date:new Date().toISOString().split('T')[0]});
+  var c = customers.find(function(x){return x.id===cid;});
+  if(c){ if(type==='credit'){c.paid+=amt;c.balance=planPrices[c.plan]-c.paid;}else{c.balance+=amt;} }
+  closeModal('modal-payment');
+  renderPayments();
+  toast(type==='credit'?'✅ Payment record ho gaya!':'📤 Deduction add ho gaya');
+  document.getElementById('p-amt').value='';
+  document.getElementById('p-note').value='';
+}
+
+// ===== RENDER DASHBOARD =====
+function renderDash() {
+  var today = new Date().toISOString().split('T')[0];
+  var todayO = orders.filter(function(o){return o.date===today;});
+  document.getElementById('s-orders').textContent = todayO.length;
+  document.getElementById('s-customers').textContent = customers.length;
+  var m = today.substring(0,7);
+  var rev = payments.filter(function(p){return p.date&&p.date.startsWith(m)&&p.type==='credit';}).reduce(function(s,p){return s+p.amt;},0);
+  document.getElementById('s-revenue').textContent = '\u20B9'+rev.toLocaleString('en-IN');
+  var pend = orders.filter(function(o){return ['Pending','Preparing','Out for Delivery'].includes(o.status);}).length;
+  document.getElementById('s-pending').textContent = pend;
+  document.getElementById('pending-badge').textContent = orders.filter(function(o){return o.status==='Pending';}).length;
+
+  // Today orders
+  document.getElementById('dash-orders').innerHTML = todayO.length ? todayO.map(function(o){
+    var c = customers.find(function(x){return x.id===o.cid;});
+    return '<tr><td><b>'+(c?c.name:'?')+'</b></td><td style="font-size:11px">'+planNames[o.plan]+'</td><td><span class="pill '+statusPill[o.status]+'">'+o.status+'</span></td><td>\u20B9'+o.amt+'</td></tr>';
+  }).join('') : '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px">Aaj koi order nahi</td></tr>';
+
+  // Payment due list
+  var dues = customers.filter(function(c){return c.balance>0;});
+  document.getElementById('dash-due-list').innerHTML = dues.length ? dues.map(function(c){
+    var ph = c.phone.startsWith('91')?c.phone:'91'+c.phone;
+    var msg = encodeURIComponent('Namaste '+c.name+'ji! Aapka Asan Tiffin payment Rs.'+c.balance+' baaki hai. Kripya jald bhugtan karein. -Asan Ghar Ka Khana');
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #F5F5F5">'
+      +'<div style="display:flex;align-items:center;gap:9px">'
+      +'<div style="width:32px;height:32px;background:linear-gradient(135deg,var(--saffron),var(--turmeric));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px">'+c.name.charAt(0)+'</div>'
+      +'<div><div style="font-weight:700;font-size:13px">'+c.name+'</div><div style="font-size:11px;color:#888">'+planNames[c.plan]+'</div></div>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;gap:7px">'
+      +'<span style="font-family:Baloo 2,sans-serif;font-size:16px;font-weight:800;color:var(--red)">\u20B9'+c.balance+'</span>'
+      +'<a href="https://wa.me/'+ph+'?text='+msg+'" target="_blank" style="background:var(--wa);color:#fff;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;text-decoration:none">\uD83D\uDCAC</a>'
+      +'</div>'
+      +'</div>';
+  }).join('') : '<div style="text-align:center;padding:28px;color:#888"><div style="font-size:32px;margin-bottom:8px">\u2705</div><div style="font-size:13px;font-weight:600">Sab customers ne payment kar diya!</div></div>';
+
+  // Ladies class aaj ka data
+  var todayKey='att_'+today;
+  var classData=classAtt[todayKey]||{count:0,rotiEach:2,total:0};
+  var classEl=document.getElementById('dash-class');
+  if(classEl){
+    if(classData.count>0){
+      classEl.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:linear-gradient(135deg,#8E44AD11,#8E44AD22);border-radius:12px;border:1.5px solid #8E44AD44">'
+        +'<div><div style="font-weight:800;font-size:14px;color:#8E44AD">👩 Ladies Class</div><div style="font-size:12px;color:#888;margin-top:2px">'+classData.count+' ladies × '+classData.rotiEach+' roti</div></div>'
+        +'<div style="text-align:right"><div style="font-size:28px;font-weight:800;color:#8E44AD">'+classData.total+'</div><div style="font-size:10px;color:#888">🫓 aaj</div></div>'
+        +'</div>';
+    } else {
+      classEl.innerHTML='<div style="text-align:center;padding:16px;color:#aaa;font-size:13px">👩 Aaj class data nahi hai</div>';
+    }
+  }
+
+  // Weekly chart
+  var days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var vals = [12,18,15,22,19,8,todayO.length||4];
+  var mx = Math.max.apply(null,vals);
+  document.getElementById('dash-chart').innerHTML = vals.map(function(v,i){
+    return '<div class="bar-wrap"><div class="bar-val">'+v+'</div><div class="bar" style="height:'+Math.round((v/mx)*100)+'%"></div><div class="bar-lbl">'+days[i]+'</div></div>';
+  }).join('');
+
+  // Sync menu display
+  var s1=document.getElementById('menu-s1'),s2=document.getElementById('menu-s2'),ch=document.getElementById('menu-ch');
+  if(s1&&document.getElementById('dm-s1')) document.getElementById('dm-s1').textContent=s1.value||'Aloo Gobi';
+  if(s2&&document.getElementById('dm-s2')) document.getElementById('dm-s2').textContent=s2.value||'Dal Makhani';
+  if(ch&&document.getElementById('dm-ch')) document.getElementById('dm-ch').textContent=ch.value||'Jeera Rice';
+}
+
+
+// ===== RENDER CUSTOMERS =====
+function renderCustomers(filter, planFilter) {
+  filter = filter||''; planFilter = planFilter||'';
+  var list = customers.filter(function(c){
+    return c.name.toLowerCase().indexOf(filter.toLowerCase())>=0 && (planFilter===''||c.plan===planFilter);
+  });
+  document.getElementById('cust-table').innerHTML = list.length ? list.map(function(c) {
+    var price = planPrices[c.plan];
+    var bc = c.balance>0?'var(--red)':'var(--green)';
+    return '<tr><td><div style="display:flex;align-items:center;gap:9px"><div class="cust-av" style="width:34px;height:34px;font-size:13px">'+c.name.charAt(0)+'</div><div><b>'+c.name+'</b><div style="font-size:11px;color:#888">'+c.addr.substring(0,30)+'...</div></div></div></td>'
+      +'<td>'+c.phone+'</td><td>'+planNames[c.plan]+'</td>'
+      +'<td><span class="'+(c.type==='Veg'?'veg':'nonveg')+'">'+c.type+'</span></td>'
+      +'<td><span style="color:'+bc+';font-weight:700">₹'+Math.abs(c.balance)+' '+(c.balance>0?'Due':'Paid')+'</span></td>'
+      +'<td><span class="pill '+(c.status==='Active'?'p-green':'p-red')+'">'+c.status+'</span></td>'
+      +'<td style="display:flex;gap:5px"><button class="btn btn-sm btn-primary" onclick="openCustDetail('+c.id+')">👁️ View</button><button class="btn btn-sm btn-danger" onclick="delCustomer('+c.id+')">🗑️</button></td></tr>';
+  }).join('') : '<tr><td colspan="7"><div class="empty"><div class="e-icon">👥</div>No customers found</div></td></tr>';
+}
+
+// ===== RENDER ORDERS =====
+function renderOrders(filter, statusF) {
+  filter = filter||''; statusF = statusF||'';
+  var list = orders.filter(function(o) {
+    var c = customers.find(function(x){return x.id===o.cid;});
+    return (c?c.name:'').toLowerCase().indexOf(filter.toLowerCase())>=0 && (statusF===''||o.status===statusF);
+  });
+  document.getElementById('orders-table').innerHTML = list.length ? list.slice().reverse().map(function(o) {
+    var c = customers.find(function(x){return x.id===o.cid;});
+    var ns = nextStatus[o.status];
+    return '<tr><td><code style="font-size:11px;background:#F5F5F5;padding:2px 6px;border-radius:5px">'+o.id+'</code></td>'
+      +'<td><b>'+(c?c.name:'?')+'</b></td>'
+      +'<td>'+planNames[o.plan]+'</td>'
+      +'<td><span class="'+(o.type==='Veg'?'veg':'nonveg')+'">'+o.type+'</span></td>'
+      +'<td>'+o.date+'</td>'
+      +'<td><span class="pill '+statusPill[o.status]+'">'+o.status+'</span></td>'
+      +'<td><b>₹'+o.amt+'</b></td>'
+      +'<td>'+(ns?'<button class="btn btn-sm btn-success" onclick="updateStatus(\''+o.id+'\',\''+ns+'\')">→ '+ns.split(' ')[0]+'</button>':'')+'</td></tr>';
+  }).join('') : '<tr><td colspan="8"><div class="empty"><div class="e-icon">📦</div>No orders found</div></td></tr>';
+}
+
+// ===== RENDER DELIVERY =====
+function renderDelivery() {
+  populateDropdowns();
+  var today = new Date().toISOString().split('T')[0];
+  var todays = orders.filter(function(o){ return o.date===today||['Pending','Preparing','Out for Delivery'].includes(o.status); });
+  document.getElementById('del-done').textContent = todays.filter(function(o){return o.status==='Delivered';}).length;
+  document.getElementById('del-pending').textContent = todays.filter(function(o){return o.status!=='Delivered'&&o.status!=='Cancelled';}).length;
+
+  document.getElementById('del-list').innerHTML = todays.length ? todays.map(function(o) {
+    var c = customers.find(function(x){return x.id===o.cid;});
+    var si = stepIdx[o.status]||0;
+    var ns = nextStatus[o.status];
+    var stepsHtml = STEPS.map(function(s,i){
+      var cls = i<si?'done':(i===si?'current':'');
+      var lineColor = i<si?'var(--green)':'#EEE';
+      var lineHtml = i<STEPS.length-1?'<div style="position:absolute;top:17px;left:60%;right:-40%;height:3px;background:'+lineColor+';z-index:0"></div>':'';
+      var checkTxt = i<si?'✓':String(i+1);
+      return '<div class="t-step '+cls+'">'+lineHtml+'<div class="t-circle">'+checkTxt+'</div><div class="t-label">'+s+'</div></div>';
+    }).join('');
+
+    var ph = c?(c.phone.startsWith('91')?c.phone:'91'+c.phone):'';
+    var msgs = {
+      'Pending': 'Namaste '+  (c?c.name:'') + 'ji! Aapka Asan Tiffin order confirm ho gaya hai. Jald deliver hoga! - Asan Ghar Ka Khana',
+      'Preparing': 'Namaste '+(c?c.name:'')+'ji! Aapka Asan Tiffin ban raha hai. Jald deliver hoga! - Asan Ghar Ka Khana',
+      'Out for Delivery': 'Namaste '+(c?c.name:'')+'ji! Aapka Asan Tiffin raste mein hai! Jald pahunchega. - Asan Ghar Ka Khana',
+      'Delivered': 'Namaste '+(c?c.name:'')+'ji! Aapka Asan Tiffin pahunch gaya! Swad lijiye! - Asan Ghar Ka Khana'
+    };
+    var waMsg = encodeURIComponent(msgs[o.status]||msgs['Preparing']);
+    var smsMsg = encodeURIComponent(msgs[o.status]||msgs['Preparing']);
+
+    return '<div style="background:var(--cream);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #F0E6D3">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
+      +'<div style="display:flex;align-items:center;gap:11px">'
+      +'<div class="cust-av" style="width:38px;height:38px;font-size:15px">'+(c?c.name.charAt(0):'?')+'</div>'
+      +'<div><b style="font-size:14px">'+(c?c.name:'Unknown')+'</b>'
+      +'<div style="font-size:11px;color:#888;margin-top:1px">📞 '+(c?c.phone:'')+' | 📍 '+(c?c.addr.substring(0,30)+'...':'')+'</div>'
+      +'<div style="font-size:11px;color:#666;margin-top:1px">🍱 '+planNames[o.plan]+' | '+(o.type==='Veg'?'🌿':'🍗')+' '+o.type+'</div>'
+      +'</div></div>'
+      +'<div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">'
+      +'<span class="pill '+statusPill[o.status]+'">'+o.status+'</span>'
+      +(ns?'<button class="btn btn-sm btn-success" onclick="updateStatus(\''+o.id+'\',\''+ns+'\')">→ '+ns+'</button>':'')
+      +'<a href="https://wa.me/'+ph+'?text='+waMsg+'" target="_blank" class="btn btn-sm btn-wa">💬 WhatsApp</a>'
+      +'<a href="sms:'+  (c?c.phone:'')+  '?body='+smsMsg+'" class="btn btn-sm btn-sms">📱 SMS</a>'
+      +'</div></div>'
+      +'<div class="tracker">'+stepsHtml+'</div>'
+      +'</div>';
+  }).join('') : '<div class="empty"><div class="e-icon">🛵</div>No deliveries today</div>';
+}
+
+// ===== MSG TEMPLATES =====
+function setTmpl(type) {
+  var msgs = {
+    preparing: 'Namaste! Aapka Asan Ghar Ka Khana tiffin ban raha hai. Jald deliver hoga! Khana khayein, khush rahein! - Asan Tiffin',
+    otw: 'Namaste! Aapka Asan Tiffin raste mein hai! Delivery boy jald pahunchenge. Tayar rahein! - Asan Ghar Ka Khana',
+    delivered: 'Namaste! Aapka Asan Tiffin pahunch gaya! Ghar jaisa swad! Kal phir milenge. - Asan Ghar Ka Khana',
+    payment: 'Namaste! Aapka Asan Tiffin payment baaki hai. Kripya jald bhugtan karein. Dhanyawad! - Asan Ghar Ka Khana'
+  };
+  var el = document.getElementById('bulk-msg');
+  if(el) el.value = msgs[type]||'';
+  toast('✅ Template set ho gaya');
+}
+function bulkWhatsApp() {
+  var cid = document.getElementById('msg-cust').value;
+  var msg = document.getElementById('bulk-msg').value.trim();
+  if(!msg){ toast('⚠️ Message likhein','#E74C3C'); return; }
+  var list = cid==='all'?customers:[customers.find(function(c){return c.id===parseInt(cid);})].filter(Boolean);
+  if(list.length>0){
+    var ph = list[0].phone.startsWith('91')?list[0].phone:'91'+list[0].phone;
+    window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
+  }
+  toast('💬 WhatsApp open ho raha hai — '+list.length+' customer'+(list.length>1?'s':''));
+}
+function bulkSMS() {
+  var cid = document.getElementById('msg-cust').value;
+  var msg = document.getElementById('bulk-msg').value.trim();
+  if(!msg){ toast('⚠️ Message likhein','#E74C3C'); return; }
+  var list = cid==='all'?customers:[customers.find(function(c){return c.id===parseInt(cid);})].filter(Boolean);
+  if(list.length>0) window.open('sms:'+list[0].phone+'?body='+encodeURIComponent(msg));
+  toast('📱 SMS open ho raha hai');
+}
+
+// ===== RENDER PAYMENTS =====
+function renderPayments(filter, statusF) {
+  filter = filter||''; statusF = statusF||'';
+  var totalRec = payments.filter(function(p){return p.type==='credit';}).reduce(function(s,p){return s+p.amt;},0);
+  var totalDue = customers.reduce(function(s,c){return s+Math.max(0,c.balance);},0);
+  var m = new Date().toISOString().substring(0,7);
+  var monthRec = payments.filter(function(p){return p.date&&p.date.startsWith(m)&&p.type==='credit';}).reduce(function(s,p){return s+p.amt;},0);
+  var dueCount = customers.filter(function(c){return c.balance>0;}).length;
+  document.getElementById('p-received').textContent = '₹'+totalRec.toLocaleString('en-IN');
+  document.getElementById('p-due').textContent = '₹'+totalDue.toLocaleString('en-IN');
+  document.getElementById('p-month').textContent = '₹'+monthRec.toLocaleString('en-IN');
+  document.getElementById('p-due-count').textContent = dueCount;
+
+  // Status table
+  var list = customers.filter(function(c){ return c.name.toLowerCase().indexOf(filter.toLowerCase())>=0; });
+  if(statusF==='paid') list = list.filter(function(c){return c.balance<=0;});
+  else if(statusF==='due') list = list.filter(function(c){return c.balance>=planPrices[c.plan];});
+  else if(statusF==='partial') list = list.filter(function(c){return c.balance>0&&c.balance<planPrices[c.plan];});
+
+  document.getElementById('pay-status-table').innerHTML = list.length ? list.map(function(c){
+    var price = planPrices[c.plan];
+    var paid = c.paid||0;
+    var bal = c.balance;
+    var pct = Math.min(100,Math.round((paid/price)*100));
+    var statusLabel,statusClass,statusColor;
+    if(bal<=0){statusLabel='✅ Fully Paid';statusClass='p-green';statusColor='var(--green)';}
+    else if(paid>0){statusLabel='⚠️ Partial';statusClass='p-yellow';statusColor='var(--gold)';}
+    else{statusLabel='❌ Due';statusClass='p-red';statusColor='var(--red)';}
+    var ph = c.phone.startsWith('91')?c.phone:'91'+c.phone;
+    var waMsg = encodeURIComponent('Namaste '+c.name+'ji! Aapka Asan Tiffin payment: Monthly Fee: Rs.'+price+' | Paid: Rs.'+paid+' | Remaining: Rs.'+Math.max(0,bal)+'. Kripya jald bhugtan karein. -Asan Ghar Ka Khana');
+    var smsMsg = encodeURIComponent('Namaste '+c.name+'ji! Asan Tiffin payment Rs.'+Math.max(0,bal)+' baaki hai. Kripya jald bhugtan karein. -Asan Ghar Ka Khana');
+    return '<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="cust-av" style="width:32px;height:32px;font-size:12px">'+c.name.charAt(0)+'</div><div><b style="font-size:13px">'+c.name+'</b><div style="font-size:11px;color:#888">'+c.phone+'</div></div></div></td>'
+      +'<td style="font-size:12px">'+planNames[c.plan]+'</td>'
+      +'<td><b>₹'+price.toLocaleString('en-IN')+'</b></td>'
+      +'<td><div style="font-size:13px;font-weight:700;color:var(--green)">₹'+paid.toLocaleString('en-IN')+'</div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+statusColor+'"></div></div>'
+      +'<div style="font-size:10px;color:#aaa;margin-top:2px">'+pct+'%</div></td>'
+      +'<td><b style="color:'+(bal>0?'var(--red)':'var(--green)')+'">₹'+Math.abs(bal).toLocaleString('en-IN')+'</b><div style="font-size:10px;color:#aaa">'+(bal>0?'Due':'Advance')+'</div></td>'
+      +'<td><span class="pill '+statusClass+'">'+statusLabel+'</span></td>'
+      +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
+      +'<button class="btn btn-sm btn-success" onclick="quickPay('+c.id+')">💰 Pay</button>'
+      +'<a href="https://wa.me/'+ph+'?text='+waMsg+'" target="_blank" class="btn btn-sm btn-wa">💬</a>'
+      +'<a href="sms:'+c.phone+'?body='+smsMsg+'" class="btn btn-sm btn-sms">📱</a>'
+      +'</div></td></tr>';
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:24px">No customers found</td></tr>';
+
+  // Payment history
+  document.getElementById('pay-history').innerHTML = payments.slice().reverse().slice(0,12).map(function(p){
+    var c = customers.find(function(x){return x.id===p.cid;});
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F5F5F5">'
+      +'<div style="width:38px;height:38px;border-radius:11px;background:'+(p.type==='credit'?'#E8F8EE':'#FDEDEC')+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+(p.type==='credit'?'💵':'📤')+'</div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(c?c.name:'')+' — '+(p.note||p.method)+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+p.date+' • '+p.method+'</div></div>'
+      +'<div style="font-size:15px;font-weight:800;font-family:\'Baloo 2\',sans-serif;color:'+(p.type==='credit'?'var(--green)':'var(--red)')+'">'+( p.type==='credit'?'+':'-')+'₹'+p.amt+'</div>'
+      +'</div>';
+  }).join('') || '<div class="empty" style="padding:20px"><div class="e-icon">💳</div>No transactions yet</div>';
+
+  // Monthly chart (last 6 months)
+  var months = [];
+  var now = new Date();
+  for(var i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({key:d.toISOString().substring(0,7),lbl:d.toLocaleString('en-IN',{month:'short'})});}
+  var mVals = months.map(function(mn){ return payments.filter(function(p){return p.date&&p.date.startsWith(mn.key)&&p.type==='credit';}).reduce(function(s,p){return s+p.amt;},0); });
+  var mMax = Math.max.apply(null,mVals.concat([1]));
+  document.getElementById('pay-chart').innerHTML = months.map(function(mn,i){
+    var v = mVals[i];
+    return '<div class="bar-wrap"><div class="bar-val" style="font-size:9px">'+(v?'₹'+(v/1000).toFixed(1)+'k':'')+'</div><div class="bar" style="height:'+Math.round((v/mMax)*100)+'%;'+(v?'':'background:#EEE')+'"></div><div class="bar-lbl">'+mn.lbl+'</div></div>';
+  }).join('');
+}
+
+function quickPay(cid) {
+  var el = document.getElementById('p-cust');
+  openModal('modal-payment');
+  setTimeout(function(){ if(el) el.value=cid; },100);
+}
+function sendPayReminder() {
+  var dues = customers.filter(function(c){return c.balance>0;});
+  if(!dues.length){ toast('✅ Sab customers ne payment kar diya!'); return; }
+  var c = dues[0];
+  var ph = c.phone.startsWith('91')?c.phone:'91'+c.phone;
+  var msg = 'Namaste '+c.name+'ji! Aapka Asan Tiffin payment Rs.'+c.balance+' baaki hai. Kripya jald bhugtan karein. Dhanyawad! -Asan Ghar Ka Khana';
+  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
+  toast('💬 '+dues.length+' customers ko reminder bheja!');
+}
+function renderPayStatus(filter, statusF) { renderPayments(filter, statusF); }
+
+// ===== MENU =====
+function saveMenu() { toast('📋 Aaj ka menu save ho gaya!'); }
+function sendMenuWA() {
+  var s1 = document.getElementById('menu-s1').value||'Sabji';
+  var s2 = document.getElementById('menu-s2').value||'Dal';
+  var ch = document.getElementById('menu-ch').value||'Chaval';
+  var sp = document.getElementById('menu-sp').value;
+  var msg = 'Namaste! Aaj ka Asan Ghar Ka Khana menu:\n\nSabji 1: '+s1+'\nSabji 2: '+s2+'\nChaval: '+ch+(sp?'\nSpecial: '+sp:'')+'\n\nGhar jaisa swad! - Asan Tiffin';
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  toast('💬 Menu WhatsApp par share ho raha hai!');
+}
+
+// ===== REPORTS =====
+function renderReports() {
+  var months = ['Jan 2025','Feb 2025','Mar 2025'];
+  var sel = document.getElementById('rep-month');
+  if(!sel.options.length) months.forEach(function(m,i){sel.add(new Option(m,i));});
+  renderReport(sel.value||1);
+  sel.onchange = function(){ renderReport(this.value); };
+}
+function renderReport(idx) {
+  var mo = orders.filter(function(o){return o.date.indexOf('2025-02')>=0;});
+  document.getElementById('r-orders').textContent = mo.length;
+  document.getElementById('r-del').textContent = mo.filter(function(o){return o.status==='Delivered';}).length;
+  document.getElementById('r-rev').textContent = '₹'+payments.filter(function(p){return p.date&&p.date.indexOf('2025-02')>=0;}).reduce(function(s,p){return s+p.amt;},0).toLocaleString('en-IN');
+  document.getElementById('r-can').textContent = mo.filter(function(o){return o.status==='Cancelled';}).length;
+
+  var dVals = [];
+  for(var i=1;i<=28;i++){
+    var d='2025-02-'+String(i).padStart(2,'0');
+    dVals.push(orders.filter(function(o){return o.date===d;}).length);
+  }
+  var mx = Math.max.apply(null,dVals.concat([1]));
+  document.getElementById('rep-chart').innerHTML = dVals.map(function(v,i){
+    return '<div class="bar-wrap"><div class="bar-val" style="font-size:8px">'+(v||'')+'</div><div class="bar" style="height:'+Math.round((v/mx)*100)+'%;'+(v?'':'background:#EEE')+'"></div><div class="bar-lbl" style="font-size:8px">'+(i+1)+'</div></div>';
+  }).join('');
+
+  var planCounts = {};
+  mo.forEach(function(o){planCounts[o.plan]=(planCounts[o.plan]||0)+1;});
+  var tot = mo.length||1;
+  document.getElementById('rep-plans').innerHTML = Object.keys(planNames).map(function(k){
+    var cnt = planCounts[k]||0;
+    var pct = Math.round((cnt/tot)*100);
+    return '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>'+planNames[k]+'</span><b>'+cnt+' orders ('+pct+'%)</b></div><div style="height:9px;background:#F0F0F0;border-radius:5px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--saffron),var(--turmeric));border-radius:5px"></div></div></div>';
+  }).join('');
+
+  var cc = {};
+  mo.forEach(function(o){cc[o.cid]=(cc[o.cid]||0)+1;});
+  document.getElementById('rep-top').innerHTML = customers.slice().sort(function(a,b){return (cc[b.id]||0)-(cc[a.id]||0);}).map(function(c){
+    var cpay = payments.filter(function(p){return p.cid===c.id&&p.date&&p.date.indexOf('2025-02')>=0;}).reduce(function(s,p){return s+p.amt;},0);
+    return '<tr><td><b>'+c.name+'</b></td><td>'+(cc[c.id]||0)+'</td><td>'+planNames[c.plan]+'</td><td style="color:var(--green);font-weight:700">₹'+cpay+'</td><td style="color:var(--red);font-weight:700">₹'+Math.max(0,c.balance)+'</td></tr>';
+  }).join('');
+}
+
+// ===== TOAST =====
+function toast(msg, bg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = bg||'var(--dark)';
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// ===== CSV IMPORT =====
+var _csvParsed = [];
+
+function downloadSampleCSV() {
+  var rows = [
+    'Name,Phone,Address,Type,Plan,Payment',
+    'Ramesh Kumar,9876543210,12 MG Road Sector 5,Veg,Full,2500',
+    'Sunita Devi,9845001234,45 Gandhi Nagar,Veg,Half3,0',
+    'Akbar Khan,9912345678,78 Nehru Colony,Non-Veg,Full,1000',
+    'Priya Sharma,9988776655,22 Civil Lines,Non-Veg,Half2,500',
+    'Mohan Lal,9001122334,5 Shastri Nagar,Veg,Half2,0'
+  ];
+  var blob = new Blob([rows.join('\n')], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'asan-tiffin-sample.csv';
+  a.click();
+  toast('📥 Sample CSV download ho raha hai!');
+}
+
+function handleCSVFile(input) {
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    parseCSV(e.target.result);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text) {
+  var lines = text.trim().split('\n').filter(function(l){ return l.trim(); });
+  if(lines.length < 2) {
+    showCSVError('CSV mein koi data nahi mila!');
+    return;
+  }
+
+  var headers = lines[0].split(',').map(function(h){ return h.trim().toLowerCase(); });
+  var nameIdx   = headers.indexOf('name');
+  var phoneIdx  = headers.indexOf('phone');
+  var addrIdx   = headers.indexOf('address');
+  var typeIdx   = headers.indexOf('type');
+  var planIdx   = headers.indexOf('plan');
+  var payIdx    = headers.indexOf('payment');
+
+  if(nameIdx === -1 || phoneIdx === -1) {
+    showCSVError('CSV mein "Name" aur "Phone" columns zaruri hain!');
+    return;
+  }
+
+  _csvParsed = [];
+  var errors = [];
+  var today = new Date().toISOString().split('T')[0];
+
+  for(var i = 1; i < lines.length; i++) {
+    var cols = lines[i].split(',').map(function(c){ return c.trim(); });
+    var name  = cols[nameIdx] || '';
+    var phone = cols[phoneIdx] || '';
+    if(!name || !phone) { errors.push('Row '+(i+1)+': Naam ya phone missing'); continue; }
+
+    // Parse type — accept variations
+    var typeRaw = typeIdx > -1 ? (cols[typeIdx]||'').toLowerCase() : '';
+    var type = 'Veg';
+    if(typeRaw.includes('non') || typeRaw.includes('nonveg') || typeRaw.includes('chicken') || typeRaw.includes('meat')) {
+      type = 'Non-Veg';
+    }
+
+    // Parse plan
+    var planRaw = planIdx > -1 ? (cols[planIdx]||'').toLowerCase() : '';
+    var plan = 'Full';
+    if(planRaw.includes('half3') || planRaw.includes('half 3')) plan = 'Half3';
+    else if(planRaw.includes('half2') || planRaw.includes('half 2') || planRaw.includes('half')) plan = 'Half2';
+
+    var pay = payIdx > -1 ? parseFloat(cols[payIdx])||0 : 0;
+    var addr = addrIdx > -1 ? (cols[addrIdx]||'') : '';
+    var price = planPrices[plan];
+
+    // Check duplicate phone
+    var existing = customers.find(function(c){ return c.phone === phone; });
+
+    _csvParsed.push({
+      name: name, phone: phone, addr: addr,
+      type: type, plan: plan, pay: pay,
+      price: price, start: today,
+      duplicate: !!existing
+    });
+  }
+
+  // Show preview
+  var prevBody = document.getElementById('csv-preview-body');
+  prevBody.innerHTML = _csvParsed.map(function(r) {
+    var dupWarn = r.duplicate ? '<span style="color:orange">⚠️ Duplicate</span>' : '<span style="color:green">✅ New</span>';
+    var typeColor = r.type === 'Non-Veg' ? '#E74C3C' : '#27AE60';
+    return '<tr style="border-bottom:1px solid #F5F5F5">'
+      +'<td style="padding:7px">'+r.name+'</td>'
+      +'<td style="padding:7px">'+r.phone+'</td>'
+      +'<td style="padding:7px;font-weight:700;color:'+typeColor+'">'+r.type+'</td>'
+      +'<td style="padding:7px">'+planNames[r.plan]+'</td>'
+      +'<td style="padding:7px">'+dupWarn+'</td>'
+      +'</tr>';
+  }).join('');
+
+  document.getElementById('csv-count').textContent = _csvParsed.length;
+  document.getElementById('csv-preview').style.display = 'block';
+  document.getElementById('csv-import-btn').style.display = 'inline-block';
+  document.getElementById('csv-errors').style.display = 'none';
+
+  if(errors.length) {
+    showCSVError('Kuch rows skip ki gayi:\n' + errors.join('\n'));
+  }
+}
+
+function showCSVError(msg) {
+  var el = document.getElementById('csv-errors');
+  el.style.display = 'block';
+  el.textContent = '⚠️ ' + msg;
+}
+
+function doImportCSV() {
+  if(!_csvParsed.length) return;
+  var imported = 0;
+  var skipped = 0;
+  _csvParsed.forEach(function(r) {
+    if(r.duplicate) { skipped++; return; }
+    var id = Date.now() + Math.floor(Math.random()*1000);
+    var price = planPrices[r.plan];
+    customers.push({
+      id: id, name: r.name, phone: r.phone, addr: r.addr,
+      plan: r.plan, type: r.type, start: r.start,
+      status: 'Active', paid: r.pay,
+      balance: Math.max(0, price - r.pay)
+    });
+    if(r.pay > 0) {
+      payments.push({id: Date.now()+Math.random(), cid: id, type:'credit', amt: r.pay,
+        method:'Cash', date: r.start, note:'Import payment'});
+    }
+    imported++;
+  });
+  renderCustomers();
+  renderDash();
+  closeModal('modal-import-csv');
+  resetCSVImport();
+  toast('✅ '+imported+' customers import ho gaye!' + (skipped?' ('+skipped+' duplicate skip)':''));
+}
+
+function resetCSVImport() {
+  _csvParsed = [];
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('csv-import-btn').style.display = 'none';
+  document.getElementById('csv-errors').style.display = 'none';
+  document.getElementById('csv-file-input').value = '';
+}
+
+// ===== CUSTOMER DETAIL =====
+var _detailCustId = null;
+
+function openCustDetail(id) {
+  _detailCustId = id;
+  var c = customers.find(function(x){ return x.id === id; });
+  if(!c) return;
+
+  var price = planPrices[c.plan];
+  var paid = c.paid || 0;
+  var bal = c.balance;
+
+  // Profile
+  document.getElementById('cd-avatar').textContent = c.name.charAt(0);
+  document.getElementById('cd-name').textContent = c.name;
+  document.getElementById('cd-sub').textContent = c.phone + ' | ' + c.type;
+  document.getElementById('cd-status-pill').innerHTML = '<span style="background:rgba(255,255,255,.25);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">' + c.status + '</span>';
+
+  // Info
+  document.getElementById('cd-phone').textContent = c.phone;
+  document.getElementById('cd-plan').innerHTML = planNames[c.plan] + ' <span class="' + (c.type==='Veg'?'veg':'nonveg') + '">' + c.type + '</span>';
+  document.getElementById('cd-addr').textContent = c.addr;
+  document.getElementById('cd-since').textContent = c.start || 'N/A';
+
+  // Payment summary cards
+  var balColor = bal > 0 ? '#E74C3C' : '#27AE60';
+  var balLabel = bal > 0 ? 'Due' : 'Advance';
+  document.getElementById('cd-pay-summary').innerHTML =
+    '<div style="background:#E8F8EE;border-radius:11px;padding:13px;text-align:center"><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;margin-bottom:4px">Monthly Fee</div><div style="font-family:Baloo 2,sans-serif;font-size:20px;font-weight:800;color:var(--leaf)">&#8377;'+price.toLocaleString('en-IN')+'</div></div>' +
+    '<div style="background:#FFF8E8;border-radius:11px;padding:13px;text-align:center"><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;margin-bottom:4px">Paid</div><div style="font-family:Baloo 2,sans-serif;font-size:20px;font-weight:800;color:var(--gold)">&#8377;'+paid.toLocaleString('en-IN')+'</div></div>' +
+    '<div style="background:' + (bal > 0 ? '#FDEDEC' : '#E8F8EE') + ';border-radius:11px;padding:13px;text-align:center"><div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;margin-bottom:4px">'+balLabel+'</div><div style="font-family:Baloo 2,sans-serif;font-size:20px;font-weight:800;color:'+balColor+'">&#8377;'+Math.abs(bal).toLocaleString('en-IN')+'</div></div>';
+
+  // Bill message
+  var billLines = [
+    'Namaste ' + c.name + 'ji! 🙏',
+    '',
+    '=== ASAN GHAR KA KHANA ===',
+    'Monthly Tiffin Bill',
+    '------------------------',
+    'Customer : ' + c.name,
+    'Phone    : ' + c.phone,
+    'Plan     : ' + planNames[c.plan],
+    'Type     : ' + c.type,
+    '------------------------',
+    'Monthly Fee : Rs.' + price,
+    'Amount Paid : Rs.' + paid,
+    'Balance Due : Rs.' + Math.max(0, bal),
+    '------------------------',
+    bal > 0 ? 'Kripya jald Rs.' + bal + ' ka bhugtan karein.' : 'Aapka payment complete hai! Dhanyawad!',
+    '',
+    'Asan Ghar Ka Khana 🍱',
+    'Ghar Jaisa Swad!'
+  ];
+  var billMsg = billLines.join('\n');
+
+  document.getElementById('cd-bill-preview').textContent = billLines.slice(0, 8).join('\n') + '\n...';
+
+  var ph = c.phone.startsWith('91') ? c.phone : '91' + c.phone;
+  document.getElementById('cd-wa-btn').onclick = function() {
+    window.open('https://wa.me/' + ph + '?text=' + encodeURIComponent(billMsg), '_blank');
+    toast('💬 WhatsApp bill bheja — ' + c.name);
+  };
+  document.getElementById('cd-sms-btn').onclick = function() {
+    window.open('sms:' + c.phone + '?body=' + encodeURIComponent(billMsg));
+    toast('📱 SMS bill bheja — ' + c.name);
+  };
+
+  // Recent orders
+  var custOrders = orders.filter(function(o){ return o.cid === id; }).slice().reverse().slice(0, 5);
+  document.getElementById('cd-orders').innerHTML = custOrders.length ? custOrders.map(function(o) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--cream);border-radius:10px;margin-bottom:6px">' +
+      '<div style="display:flex;align-items:center;gap:9px">' +
+      '<span style="font-size:18px">' + (o.status==='Delivered'?'✅':o.status==='Cancelled'?'❌':'🟡') + '</span>' +
+      '<div><div style="font-size:12px;font-weight:700">' + o.date + '</div><div style="font-size:11px;color:#888">' + planNames[o.plan] + '</div></div>' +
+      '</div>' +
+      '<div style="text-align:right"><div style="font-size:13px;font-weight:800">&#8377;' + o.amt + '</div>' +
+      '<span class="pill ' + statusPill[o.status] + '" style="font-size:10px">' + o.status + '</span>' +
+      '</div></div>';
+  }).join('') : '<div style="text-align:center;color:#aaa;padding:16px;font-size:13px">Koi orders nahi</div>';
+
+  // Payment history
+  var custPays = payments.filter(function(p){ return p.cid === id; }).slice().reverse();
+  document.getElementById('cd-payments').innerHTML = custPays.length ? custPays.map(function(p) {
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F5F5F5">' +
+      '<div style="width:34px;height:34px;border-radius:9px;background:' + (p.type==='credit'?'#E8F8EE':'#FDEDEC') + ';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">' + (p.type==='credit'?'💵':'📤') + '</div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">' + (p.note||p.method) + '</div><div style="font-size:11px;color:#aaa">' + p.date + ' • ' + p.method + '</div></div>' +
+      '<div style="font-size:15px;font-weight:800;font-family:Baloo 2,sans-serif;color:' + (p.type==='credit'?'var(--green)':'var(--red)') + '">' + (p.type==='credit'?'+':'-') + '&#8377;' + p.amt + '</div>' +
+      '</div>';
+  }).join('') : '<div style="text-align:center;color:#aaa;padding:16px;font-size:13px">Koi payment record nahi</div>';
+
+  openModal('modal-cust-detail');
+}
+
+function openPayFromDetail() {
+  closeModal('modal-cust-detail');
+  setTimeout(function() {
+    openModal('modal-payment');
+    setTimeout(function() {
+      var el = document.getElementById('p-cust');
+      if(el && _detailCustId) el.value = _detailCustId;
+    }, 150);
+  }, 200);
+}
+
+// ===== INIT =====
+window.onload = function() {
+  var d = new Date();
+  document.getElementById('today-date').textContent = d.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('banner-date').textContent = d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+
+  // Loading banner
+  var banner=document.createElement('div');
+  banner.id='load-banner';
+  banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#FF6B00;color:#fff;text-align:center;padding:10px;font-size:13px;font-weight:700;font-family:Poppins,sans-serif';
+  banner.textContent='⏳ Akshay ki app se data load ho raha hai...';
+  document.body.appendChild(banner);
+
+  loadFromFirebase(function(){
+    var b=document.getElementById('load-banner');
+    if(b){
+      b.style.background=customers.length>0?'#2D6A4F':'#E74C3C';
+      b.textContent=customers.length>0?'✅ '+customers.length+' customers load hue!':'⚠️ Data nahi mila — Akshay pehle kuch save kare!';
+      setTimeout(function(){b.style.display='none';},3000);
+    }
+    renderDash();
+    renderCustomers();
+  });
+};
+</script>
+</body>
+</html>
