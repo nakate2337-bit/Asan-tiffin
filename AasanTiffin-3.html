@@ -306,6 +306,30 @@ body.dark .toast-msg{background:#F1F5F9;color:#1A1A2E}
   </div>
 </div></div>
 
+<div class="modal-overlay" id="modal-edit-customer"><div class="modal">
+  <div class="modal-header"><div class="modal-title">✏️ Customer Edit</div><button class="modal-close" onclick="closeModal('modal-edit-customer')">✕</button></div>
+  <input type="hidden" id="ec-id">
+  <div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="ec-name" placeholder="Customer naam"></div>
+  <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="ec-phone" type="tel" placeholder="Mobile number"></div>
+  <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="ec-addr" placeholder="Delivery address"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Zone</label><input class="form-input" id="ec-zone" placeholder="Market Yard"></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-input" id="ec-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option><option value="Both">🍽️ Both</option></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">💳 Plan</label>
+    <div class="plan-grid">
+      <div class="plan-opt" id="eplan-2500" onclick="selectEditPlan(2500)"><div class="plan-price">₹2500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-2000" onclick="selectEditPlan(2000)"><div class="plan-price">₹2000</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-1500" onclick="selectEditPlan(1500)"><div class="plan-price">₹1500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-custom" onclick="selectEditPlan(0)"><div class="plan-price">✏️</div><div class="plan-lbl">Custom</div></div>
+    </div>
+    <input class="form-input" id="ec-custom-amt" type="number" placeholder="Custom amount" style="display:none;margin-top:8px">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-edit-customer')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="saveEditCust()">✅ Update</button>
+  </div>
+</div></div>
 <div class="modal-overlay" id="modal-order"><div class="modal">
   <div class="modal-header"><div class="modal-title">➕ New Order</div><button class="modal-close" onclick="closeModal('modal-order')">✕</button></div>
   <div class="form-group"><label class="form-label">Customer *</label><select class="form-input" id="o-cust" onchange="autoFillAmt()"><option value="">-- Select --</option></select></div>
@@ -441,7 +465,11 @@ var deferredPrompt=null;
 // DEFAULT PINS
 var PINS={owner:'1234',delivery:'5678'};
 
-function save(){try{localStorage.setItem('at3',JSON.stringify(DB));}catch(e){}}
+var FB_URL='https://asan-tiffin-87dde-default-rtdb.firebaseio.com/asanData.json';
+function save(){
+  try{localStorage.setItem('at3',JSON.stringify(DB));}catch(e){}
+  try{fetch(FB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(DB)}).catch(function(){});}catch(e){}
+}
 function load(){try{var s=localStorage.getItem('at3');if(s)DB=JSON.parse(s);}catch(e){}}
 function savePinsStore(){localStorage.setItem('atPins',JSON.stringify(PINS));}
 function loadPins(){try{var s=localStorage.getItem('atPins');if(s)PINS=JSON.parse(s);}catch(e){}}
@@ -504,7 +532,8 @@ function addCustomer(){
   if(!name||!phone){toast('⚠️ Naam aur phone zaroor!');return;}
   var plan=null;if(selPlan===0)plan=parseInt(document.getElementById('c-custom-amt').value)||null;else if(selPlan)plan=selPlan;
   var cid=Date.now();
-  DB.customers.push({id:cid,name:name,phone:phone,address:document.getElementById('c-addr').value.trim(),zone:document.getElementById('c-zone').value.trim(),type:document.getElementById('c-type').value,startDate:document.getElementById('c-start').value||today(),plan:plan});
+  var roti=plan>=2500?4:plan>=2000?3:plan>=1500?2:2;
+  DB.customers.push({id:cid,name:name,phone:phone,address:document.getElementById('c-addr').value.trim(),zone:document.getElementById('c-zone').value.trim(),type:document.getElementById('c-type').value,startDate:document.getElementById('c-start').value||today(),plan:plan,roti:roti});
   if(!DB.phonebook)DB.phonebook=[];
   if(!DB.phonebook.find(function(x){return x.phone===phone;}))DB.phonebook.push({id:cid+1,name:name,phone:phone});
   if(plan){var dr=getDR(plan),lr=Math.round(dr/2),dinr=dr-lr,sd=new Date(document.getElementById('c-start').value||today()),n=new Date(),yr=n.getFullYear(),mo=n.getMonth(),dim=new Date(yr,mo+1,0).getDate(),cnt=0;for(var day=sd.getDate();day<=dim;day++){var cm=mo+1,dk=yr+'-'+(cm<10?'0':'')+cm+'-'+(day<10?'0':'')+day;DB.orders.push({id:Date.now()+cnt,custId:cid,date:dk,meal:'Lunch',type:document.getElementById('c-type').value==='Non-Veg'?'Non-Veg':'Veg',amount:lr,status:'Pending',note:''});cnt++;DB.orders.push({id:Date.now()+cnt,custId:cid,date:dk,meal:'Dinner',type:document.getElementById('c-type').value==='Non-Veg'?'Non-Veg':'Veg',amount:dinr,status:'Pending',note:''});cnt++;}toast('✅ '+name+' add! '+cnt+' orders! 🎉',4000);}else{toast('✅ Customer add!');}
@@ -553,6 +582,12 @@ function renderDash(){
   var cd=getTodayClass();
   var classCount=cd.count||0;
   var classTotalRoti=cd.total||0;
+  // Total roti = all customers roti + ladies roti
+  var custTotalRoti=DB.customers.reduce(function(s,c){
+    var r=c.roti||(c.plan>=2500?4:c.plan>=2000?3:2);
+    return s+r;
+  },0);
+  var grandTotalRoti=custTotalRoti+classTotalRoti;
 
   var h='<div class="banner"><div class="banner-title">🍱 Asan Tiffin</div><div class="banner-sub">Asan Ghar Ka Khana</div><div class="banner-badge">'+n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+'</div></div>';
   h+=renderCarryOver();
@@ -565,10 +600,7 @@ function renderDash(){
   h+='<div class="stat-card"><div class="stat-ic">⏳</div><div class="stat-val" style="color:var(--rd)">'+dueCusts.length+'</div><div class="stat-lbl">Due</div></div>';
   h+='<div class="stat-card"><div class="stat-ic">✅</div><div class="stat-val" style="color:var(--gn)">'+delv+'</div><div class="stat-lbl">Delivered</div></div>';
   h+='<div class="stat-card"><div class="stat-ic">💰</div><div class="stat-val" style="color:var(--gn);font-size:16px">'+dueCusts.length+'</div><div class="stat-lbl">Due Custs</div></div>';
-  if(classCount){
-    h+='<div class="stat-card"><div class="stat-ic">👩</div><div class="stat-val" style="color:var(--pu)">'+classCount+'</div><div class="stat-lbl">Ladies</div></div>';
-    h+='<div class="stat-card"><div class="stat-ic">🫓</div><div class="stat-val" style="color:var(--pu)">'+classTotalRoti+'</div><div class="stat-lbl">Aaj ki Roti</div></div>';
-  }
+  h+='<div class="stat-card"><div class="stat-ic">🫓</div><div class="stat-val" style="color:var(--pu)">'+grandTotalRoti+'</div><div class="stat-lbl">Aaj ki Roti</div></div>';
   h+='</div>';
 
   if(classCount){
@@ -577,6 +609,26 @@ function renderDash(){
     h+='<div><div style="font-weight:800;font-size:14px">👩 Ladies Class</div><div style="font-size:12px;color:var(--sb);margin-top:2px">'+classCount+' ladies × '+(cd.rotiEach||2)+' roti</div></div>';
     h+='<div style="text-align:right"><div style="font-size:28px;font-weight:800;color:var(--pu)">'+classTotalRoti+'</div><div style="font-size:10px;color:var(--sb)">Roti 🫓 aaj</div></div>';
     h+='</div></div>';
+  }
+
+  // Chutti wale customers aaj
+  var chuttiCusts=DB.customers.filter(function(c){
+    return DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.isChutti;});
+  });
+  if(chuttiCusts.length){
+    var mealType=hr>=7&&hr<18?'Lunch':'Dinner';
+    h+='<div class="card" style="border:2px solid var(--rd);margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+    h+='<div><div style="font-weight:800;font-size:14px">🏖️ Aaj Chutti</div><div style="font-size:12px;color:var(--sb);margin-top:2px">'+chuttiCusts.length+' customers</div></div>';
+    h+='<button onclick="sendChuttiReminder(\''+mealType+'\')" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer">📲 '+mealType+' Remind</button>';
+    h+='</div>';
+    chuttiCusts.forEach(function(c){
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid var(--br)">';
+      h+='<span style="font-size:13px;font-weight:600">🏖️ '+c.name+'</span>';
+      h+='<span style="font-size:11px;color:var(--sb)">'+c.phone+'</span>';
+      h+='</div>';
+    });
+    h+='</div>';
   }
 
   h+='<div class="card"><div class="card-title">⚡ Quick Actions</div><div class="qa-grid"><button class="qa-btn" style="background:linear-gradient(135deg,var(--or),var(--or2));color:#fff" onclick="openModal(\'modal-order\')"><span class="qa-ic">➕</span>New Order</button><button class="qa-btn" style="background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff" onclick="openModal(\'modal-bulk\')"><span class="qa-ic">⚡</span>Bulk Order</button><button class="qa-btn" style="background:linear-gradient(135deg,#2D6A4F,#52B788);color:#fff" onclick="openModal(\'modal-customer\')"><span class="qa-ic">👤</span>Add Customer</button><button class="qa-btn" style="background:linear-gradient(135deg,var(--gd),#E67E22);color:#fff" onclick="openModal(\'modal-payment\')"><span class="qa-ic">💵</span>Payment</button></div></div>';
@@ -590,6 +642,75 @@ function renderDash(){
 
   if(dueCusts.length){h+='<div class="card"><div class="card-title">⏳ Payment Due</div>';dueCusts.forEach(function(c){var d=due(c.id);h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+c.name+'</div><div style="font-size:11px;color:var(--sb)">'+c.phone+'</div></div><div style="display:flex;align-items:center;gap:8px"><div style="font-weight:700;color:var(--rd)">₹'+d+'</div><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button></div></div>';});h+='</div>';}
   document.getElementById('page-dash').innerHTML=h;
+}
+
+var selEditPlan=null;
+function selectEditPlan(p){
+  selEditPlan=p;
+  document.querySelectorAll('[id^="eplan-"]').forEach(function(o){o.classList.remove('sel');});
+  document.getElementById('eplan-'+(p||'custom')).classList.add('sel');
+  document.getElementById('ec-custom-amt').style.display=p===0?'block':'none';
+}
+function editCust(id){
+  load();
+  var c=DB.customers.find(function(x){return x.id===id;});
+  if(!c)return;
+  document.getElementById('ec-id').value=id;
+  document.getElementById('ec-name').value=c.name||'';
+  document.getElementById('ec-phone').value=c.phone||'';
+  document.getElementById('ec-addr').value=c.address||'';
+  document.getElementById('ec-zone').value=c.zone||'';
+  document.getElementById('ec-type').value=c.type||'Veg';
+  // Plan
+  selEditPlan=c.plan||null;
+  document.querySelectorAll('[id^="eplan-"]').forEach(function(o){o.classList.remove('sel');});
+  if(c.plan===2500) document.getElementById('eplan-2500').classList.add('sel');
+  else if(c.plan===2000) document.getElementById('eplan-2000').classList.add('sel');
+  else if(c.plan===1500) document.getElementById('eplan-1500').classList.add('sel');
+  else if(c.plan){document.getElementById('eplan-custom').classList.add('sel');document.getElementById('ec-custom-amt').value=c.plan;document.getElementById('ec-custom-amt').style.display='block';}
+  else document.getElementById('ec-custom-amt').style.display='none';
+  openModal('modal-edit-customer');
+}
+function saveEditCust(){
+  var id=parseInt(document.getElementById('ec-id').value);
+  var name=document.getElementById('ec-name').value.trim();
+  var phone=document.getElementById('ec-phone').value.trim();
+  if(!name){toast('⚠️ Naam daalo!');return;}
+  if(!phone){toast('⚠️ Phone daalo!');return;}
+  var plan=selEditPlan===0?parseInt(document.getElementById('ec-custom-amt').value)||0:selEditPlan||0;
+  var roti=plan>=2500?4:plan>=2000?3:2;
+  load();
+  var idx=DB.customers.findIndex(function(x){return x.id===id;});
+  if(idx<0){toast('⚠️ Customer nahi mila!');return;}
+  DB.customers[idx].name=name;
+  DB.customers[idx].phone=phone;
+  DB.customers[idx].address=document.getElementById('ec-addr').value.trim();
+  DB.customers[idx].zone=document.getElementById('ec-zone').value.trim();
+  DB.customers[idx].type=document.getElementById('ec-type').value;
+  DB.customers[idx].plan=plan;
+  DB.customers[idx].roti=roti;
+  save();
+  closeModal('modal-edit-customer');
+  toast('✅ '+name+' update ho gaya!');
+  renderCustList('');
+  renderDash();
+}
+
+function sendChuttiReminder(meal){
+  var tod=today();
+  var chuttiCusts=DB.customers.filter(function(c){
+    return DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.isChutti;});
+  });
+  if(!chuttiCusts.length){toast('Aaj koi chutti nahi!');return;}
+  var idx=0;
+  function sendNext(){
+    if(idx>=chuttiCusts.length){toast('✅ Sab '+chuttiCusts.length+' customers ko remind kar diya!');return;}
+    var c=chuttiCusts[idx++];
+    var msg='🍱 *Asan Tiffin*\n\nNamaste *'+c.name+'* ji! 🙏\n\nAaj aapki *'+meal+'* ki chutti hai.\n\n_Kal phir se tiffin milega!_ 😊\n\n— *Asan Tiffin* 🍛';
+    window.open('https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+    setTimeout(sendNext,1500);
+  }
+  sendNext();
 }
 
 function renderCusts(q){
@@ -623,7 +744,7 @@ function renderCustList(q){
     if(c.zone)h+='<div style="font-size:12px;color:var(--pu);font-weight:700;margin-bottom:6px">🏘️ '+c.zone+'</div>';
     if(chuttiDays.length)h+='<div style="background:#FEE2E2;border-radius:9px;padding:7px 11px;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--rd)">🏖️ Chutti: '+chuttiDays.join(', ')+'</div>';
     if(c.plan&&dr>0){h+='<div style="background:var(--ib);border-radius:11px;padding:10px;margin-bottom:10px;border:1px solid var(--br)"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:5px"><div><div style="font-size:15px;font-weight:800;color:var(--or)">₹'+lr+'</div><div style="font-size:9px;color:var(--sb)">🌞 Lunch</div></div><div><div style="font-size:15px;font-weight:800;color:var(--bl)">₹'+dinr+'</div><div style="font-size:9px;color:var(--sb)">🌙 Dinner</div></div><div><div style="font-size:15px;font-weight:800;color:'+(planDue>0?'var(--rd)':'var(--gn)')+'">'+( planDue>0?'₹'+planDue:'✅')+'</div><div style="font-size:9px;color:var(--sb)">Due</div></div></div><div style="font-size:10px;color:var(--sb);text-align:center">Del: ₹'+deliveredAmt+' • Paid: ₹'+paid+' • '+dl+' din baaki</div></div>';}
-    h+='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="orderFor('+c.id+')">➕</button><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button><button class="btn btn-secondary btn-sm" onclick="markChutti('+c.id+')">🏖️</button><a class="btn btn-blue btn-sm" href="tel:'+c.phone+'">📞</a><button class="btn btn-wa btn-sm" onclick="sendWA('+c.id+')">💬</button><button class="btn btn-wa btn-sm" onclick="sendBill('+c.id+')">🧾</button><button class="btn btn-purple btn-sm" onclick="showQR('+c.id+')">📲</button><button class="btn btn-secondary btn-sm" onclick="showHistory('+c.id+')">📅</button><button class="btn btn-danger btn-sm" onclick="delCust('+c.id+')">🗑️</button></div></div>';
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="orderFor('+c.id+')">➕</button><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button><button class="btn btn-secondary btn-sm" onclick="markChutti('+c.id+')">🏖️</button><a class="btn btn-blue btn-sm" href="tel:'+c.phone+'">📞</a><button class="btn btn-wa btn-sm" onclick="sendWA('+c.id+')">💬</button><button class="btn btn-wa btn-sm" onclick="sendBill('+c.id+')">🧾</button><button class="btn btn-purple btn-sm" onclick="showQR('+c.id+')">📲</button><button class="btn btn-secondary btn-sm" onclick="showHistory('+c.id+')">📅</button><button class="btn btn-secondary btn-sm" onclick="editCust('+c.id+')" style="background:#FFF3E0;color:var(--or);border:1.5px solid var(--or)">✏️</button><button class="btn btn-danger btn-sm" onclick="delCust('+c.id+')">🗑️</button></div></div>';
   });
   var wrap=document.getElementById('cust-list-wrap');
   if(wrap) wrap.innerHTML=h;
