@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FF6B00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Asan Tiffin">
+<link rel="manifest" href="data:application/json,{%22name%22:%22Asan%20Tiffin%22,%22short_name%22:%22Tiffin%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23FF6B00%22,%22theme_color%22:%22%23FF6B00%22}">
+<title>Asan Tiffin</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--or:#FF6B00;--or2:#FFA500;--dk:#1A1A2E;--rd:#E74C3C;--gn:#27AE60;--gd:#F39C12;--bl:#2980B9;--pu:#8E44AD;--wa:#25D366;
+--bg:#F0F2F5;--cd:#fff;--tx:#1A1A2E;--sb:#6B7280;--br:#E5E7EB;--ib:#F9FAFB;--sh:rgba(0,0,0,.08)}
+body.dark{--bg:#0F1117;--cd:#1A1D2E;--tx:#F1F5F9;--sb:#94A3B8;--br:#2D3748;--ib:#252838;--sh:rgba(0,0,0,.3)}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);padding-bottom:80px;transition:background .3s,color .3s}
+
+/* LOGIN SCREEN */
+#login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#1A1A2E,#2C3E50);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 20px 20px;overflow-y:auto}
+#login-screen.hidden{display:none}
+.login-logo{font-size:46px;margin-bottom:2px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.login-title{font-family:'Baloo 2',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:2px}
+.login-sub{color:rgba(255,255,255,.6);font-size:11px;margin-bottom:14px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-bottom:14px}
+.role-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;color:#fff}
+.role-btn:active{transform:scale(.95)}
+.role-btn.active{border-color:var(--or);background:rgba(255,107,0,.2)}
+.role-ic{font-size:28px;margin-bottom:4px}
+.role-nm{font-weight:700;font-size:13px}
+.role-ds{font-size:10px;opacity:.6;margin-top:2px}
+.pin-section{width:100%;max-width:320px}
+.pin-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;margin-bottom:8px;text-align:center}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:12px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.3);transition:all .2s}
+.pin-dot.filled{background:var(--or);border-color:var(--or)}
+.pin-pad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pin-key{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px;font-size:20px;font-weight:700;color:#fff;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:rgba(255,107,0,.3)}
+.pin-key:active{background:rgba(255,107,0,.4);transform:scale(.92)}
+.pin-error{color:#FF6B6B;font-size:12px;text-align:center;margin-top:6px;font-weight:600}
+
+/* INSTALL BANNER */
+#install-banner{background:linear-gradient(135deg,var(--or),var(--or2));padding:12px 16px;display:flex;align-items:center;justify-content:space-between;display:none}
+.ib-text{color:#fff;font-size:12px;font-weight:700}
+.ib-sub{color:rgba(255,255,255,.8);font-size:10px}
+.ib-btn{background:rgba(255,255,255,.25);border:none;border-radius:10px;padding:8px 14px;color:#fff;font-weight:800;font-size:11px;cursor:pointer}
+
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--cd);display:flex;border-top:1px solid var(--br);z-index:200;padding:5px 0 8px;box-shadow:0 -4px 20px var(--sh)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;cursor:pointer;border:none;background:none}
+.bn-ic{font-size:20px;transition:transform .2s}
+.bn-lb{font-size:9px;color:var(--sb);font-weight:600;margin-top:2px}
+.bn-item.active .bn-lb{color:var(--or)}
+.bn-item.active .bn-ic{transform:scale(1.2)}
+
+.topbar{background:var(--cd);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;border-bottom:1px solid var(--br)}
+.tb-title{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800}
+.tb-date{font-size:10px;color:var(--sb);margin-top:1px}
+.tb-right{display:flex;gap:8px;align-items:center}
+.dm-btn{background:var(--ib);border:1px solid var(--br);border-radius:20px;padding:6px 10px;cursor:pointer;font-size:14px}
+.tb-btn{background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;border:none;border-radius:12px;padding:9px 15px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,0,.3)}
+.logout-btn{background:var(--ib);border:1px solid var(--br);border-radius:10px;padding:7px 10px;cursor:pointer;font-size:12px;font-weight:700;color:var(--sb)}
+
+.page{display:none;padding:15px;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--cd);border-radius:16px;padding:15px;box-shadow:0 2px 10px var(--sh);margin-bottom:12px;border:1px solid var(--br)}
+.card-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;margin-bottom:11px}
+.banner{background:linear-gradient(135deg,var(--or),var(--or2));border-radius:20px;padding:18px;margin-bottom:14px;overflow:hidden;position:relative}
+.banner::after{content:'🍱';position:absolute;right:-8px;top:-8px;font-size:75px;opacity:.15;transform:rotate(-15deg);pointer-events:none}
+.banner-title{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.banner-sub{color:rgba(255,255,255,.85);font-size:11px;margin-top:3px}
+.banner-badge{background:rgba(255,255,255,.2);border-radius:10px;padding:7px 13px;font-size:12px;font-weight:700;color:#fff;margin-top:10px;display:inline-block}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat-card{background:var(--cd);border-radius:16px;padding:14px;box-shadow:0 2px 10px var(--sh);border:1px solid var(--br)}
+.stat-ic{font-size:22px;margin-bottom:6px}
+.stat-val{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;margin:2px 0}
+.stat-lbl{font-size:10px;color:var(--sb);font-weight:600}
+
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qa-btn{border:none;border-radius:16px;padding:16px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;text-align:center;box-shadow:0 4px 12px var(--sh);transition:transform .15s}
+.qa-btn:active{transform:scale(.95)}
+.qa-ic{font-size:26px;display:block;margin-bottom:5px}
+
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.p-green{background:#DCFCE7;color:#16A34A}.p-yellow{background:#FEF3C7;color:#D97706}
+.p-red{background:#FEE2E2;color:#DC2626}.p-blue{background:#DBEAFE;color:#2563EB}
+.p-orange{background:#FFEDD5;color:#EA580C}.p-purple{background:#F3E8FF;color:#9333EA}
+body.dark .p-green{background:#14311A;color:#4ADE80}
+body.dark .p-yellow{background:#2D2008;color:#FCD34D}
+body.dark .p-red{background:#3B1414;color:#F87171}
+body.dark .p-blue{background:#1E2F4D;color:#60A5FA}
+body.dark .p-orange{background:#2D1A0A;color:#FB923C}
+body.dark .p-purple{background:#2D1B44;color:#C084FC}
+
+.btn{padding:9px 13px;border-radius:11px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:5px;transition:transform .15s}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;box-shadow:0 3px 10px rgba(255,107,0,.25)}
+.btn-secondary{background:var(--ib);color:var(--tx);border:1px solid var(--br)}
+.btn-danger{background:#FEE2E2;color:#DC2626}
+body.dark .btn-danger{background:#3B1414;color:#F87171}
+.btn-success{background:#DCFCE7;color:#16A34A}
+body.dark .btn-success{background:#14311A;color:#4ADE80}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-blue{background:var(--bl);color:#fff}
+.btn-purple{background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff}
+.btn-sm{padding:6px 10px;font-size:11px;border-radius:9px}
+.btn-full{width:100%;justify-content:center;padding:13px}
+
+.form-group{margin-bottom:13px}
+.form-label{font-size:11px;font-weight:600;color:var(--sb);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.form-input{width:100%;padding:11px 13px;border:2px solid var(--br);border-radius:11px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;background:var(--ib);color:var(--tx);transition:border-color .2s}
+.form-input:focus{border-color:var(--or)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.search-box{width:100%;padding:11px 13px 11px 40px;border:2px solid var(--br);border-radius:13px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;background:var(--ib);color:var(--tx);margin-bottom:12px}
+.search-box:focus{border-color:var(--or)}
+.search-wrap{position:relative}
+.search-wrap::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--cd);border-radius:22px 22px 0 0;padding:20px;width:100%;max-height:92vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.modal-title{font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:700}
+.modal-close{background:var(--ib);border:1px solid var(--br);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px}
+.modal-footer{display:flex;gap:10px;margin-top:15px}
+
+.plan-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px}
+.plan-opt{border:2px solid var(--br);border-radius:11px;padding:10px 5px;text-align:center;cursor:pointer;transition:all .2s;background:var(--ib)}
+.plan-opt.sel{border-color:var(--or);background:#FFF8F0}
+body.dark .plan-opt.sel{background:#2D1A0A}
+.plan-price{font-weight:800;font-size:12px;color:var(--or)}
+.plan-lbl{font-size:9px;color:var(--sb);margin-top:2px}
+
+.cust-card{background:var(--cd);border-radius:16px;padding:15px;box-shadow:0 2px 10px var(--sh);margin-bottom:11px;border:1px solid var(--br);border-left:4px solid var(--or)}
+.cust-av{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--or),var(--or2));display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
+.order-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--br)}
+.order-row:last-child{border-bottom:none}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sec-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700}
+.empty{text-align:center;padding:40px 20px;color:var(--sb)}
+.ei{font-size:48px;margin-bottom:10px}
+.toast-msg{position:fixed;bottom:88px;left:14px;right:14px;background:var(--dk);color:#fff;padding:13px 16px;border-radius:14px;font-size:13px;font-weight:600;z-index:9999;text-align:center;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+body.dark .toast-msg{background:#F1F5F9;color:#1A1A2E}
+.toast-msg.show{transform:translateY(0);opacity:1}
+.tab-bar{display:flex;background:var(--ib);border-radius:13px;padding:3px;margin-bottom:12px;border:1px solid var(--br)}
+.tab-item{flex:1;padding:9px;text-align:center;font-size:11px;font-weight:700;color:var(--sb);cursor:pointer;border-radius:10px;transition:all .2s}
+.tab-item.active{background:var(--cd);color:var(--or);box-shadow:0 2px 6px var(--sh)}
+
+/* DELIVERY APP */
+#delivery-app{display:none}
+.d-topbar{background:linear-gradient(135deg,var(--pu),#9B59B6);padding:16px;color:#fff;text-align:center}
+.d-score-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
+.d-score-box{background:rgba(255,255,255,.15);border-radius:12px;padding:10px;text-align:center}
+.d-score-val{font-size:22px;font-weight:800}
+.d-score-lbl{font-size:9px;opacity:.8;font-weight:600}
+.d-tabs{display:flex;background:#fff;border-bottom:2px solid var(--br)}
+.d-tab{flex:1;padding:11px;text-align:center;font-size:11px;font-weight:700;color:var(--sb);cursor:pointer;border-bottom:3px solid transparent}
+.d-tab.active{color:var(--pu);border-bottom-color:var(--pu)}
+
+/* MONTHLY SUMMARY */
+.summary-hero{background:linear-gradient(135deg,#1A1A2E,#2C3E50);border-radius:20px;padding:20px;margin-bottom:14px;color:#fff}
+.summary-amount{font-family:'Baloo 2',sans-serif;font-size:38px;font-weight:800;color:var(--or2)}
+.progress-bar{height:8px;background:rgba(255,255,255,.15);border-radius:10px;margin:8px 0;overflow:hidden}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--or),var(--or2));transition:width .8s ease}
+.top-cust-card{background:var(--cd);border-radius:14px;padding:12px;box-shadow:0 2px 8px var(--sh);margin-bottom:8px;border:1px solid var(--br);display:flex;align-items:center;gap:12px}
+.rank-badge{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.tracker{display:flex;align-items:flex-start;margin-top:12px}
+.t-step{flex:1;text-align:center;position:relative}
+.t-step::after{content:'';position:absolute;top:17px;left:60%;right:-40%;height:3px;background:#EEE;z-index:0}
+.t-step:last-child::after{display:none}
+.t-step.done::after{background:var(--gn)}
+.t-circle{width:34px;height:34px;border-radius:50%;background:#EEE;border:3px solid #EEE;display:flex;align-items:center;justify-content:center;font-size:12px;margin:0 auto 5px;position:relative;z-index:1;font-weight:800}
+.t-step.done .t-circle{background:var(--gn);border-color:var(--gn);color:#fff}
+.t-step.current .t-circle{background:var(--or);border-color:var(--or);color:#fff;animation:tpulse 1.5s infinite}
+.t-label{font-size:9px;font-weight:600;color:#aaa}
+.t-step.done .t-label,.t-step.current .t-label{color:var(--tx)}
+@keyframes tpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,.4)}50%{box-shadow:0 0 0 8px rgba(255,107,0,0)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-logo">🍱</div>
+  <div class="login-title">Asan Tiffin</div>
+  <div class="login-sub">Asan Ghar Ka Khana</div>
+  <div class="role-grid">
+    <div class="role-btn active" id="role-owner" data-role="owner">
+      <div class="role-ic">👑</div>
+      <div class="role-nm">Owner</div>
+      <div class="role-ds">Full access</div>
+    </div>
+    <div class="role-btn" id="role-delivery" data-role="delivery">
+      <div class="role-ic">🛵</div>
+      <div class="role-nm">Delivery Boy</div>
+      <div class="role-ds">Delivery only</div>
+    </div>
+  </div>
+  <div class="pin-section">
+    <div class="pin-label" id="pin-label">Owner PIN daalo</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-pad" id="pin-pad">
+      <div class="pin-key" data-key="1">1</div>
+      <div class="pin-key" data-key="2">2</div>
+      <div class="pin-key" data-key="3">3</div>
+      <div class="pin-key" data-key="4">4</div>
+      <div class="pin-key" data-key="5">5</div>
+      <div class="pin-key" data-key="6">6</div>
+      <div class="pin-key" data-key="7">7</div>
+      <div class="pin-key" data-key="8">8</div>
+      <div class="pin-key" data-key="9">9</div>
+      <div class="pin-key" data-key="clr" style="font-size:14px">⚙️ Set</div>
+      <div class="pin-key" data-key="0">0</div>
+      <div class="pin-key" data-key="del">⌫</div>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <div><div class="ib-text">📱 App Install Karo!</div><div class="ib-sub">Home screen pe add karo</div></div>
+  <button class="ib-btn" onclick="installApp()">Install ➕</button>
+</div>
+
+<!-- OWNER APP -->
+<div id="owner-app" style="display:none">
+<nav class="bnav">
+  <button class="bn-item active" id="nav-dash" onclick="showPage('dash')"><span class="bn-ic">🏠</span><span class="bn-lb">Home</span></button>
+  <button class="bn-item" id="nav-customers" onclick="showPage('customers')"><span class="bn-ic">👥</span><span class="bn-lb">Customers</span></button>
+  <button class="bn-item" id="nav-orders" onclick="showPage('orders')"><span class="bn-ic">📦</span><span class="bn-lb">Orders</span></button>
+  <button class="bn-item" id="nav-kitchen" onclick="showPage('kitchen')"><span class="bn-ic">👨‍🍳</span><span class="bn-lb">Kitchen</span></button>
+  <button class="bn-item" id="nav-summary" onclick="showPage('summary')"><span class="bn-ic">📊</span><span class="bn-lb">Summary</span></button>
+  <button class="bn-item" id="nav-reports" onclick="showPage('reports')"><span class="bn-ic">💰</span><span class="bn-lb">Reports</span></button>
+  <button class="bn-item" id="nav-class" onclick="showPage('class')"><span class="bn-ic">👩</span><span class="bn-lb">Class</span></button>
+</nav>
+<div class="topbar">
+  <div><div class="tb-title" id="pg-title">🍱 Asan Tiffin</div><div class="tb-date" id="pg-date"></div></div>
+  <div class="tb-right">
+    <button class="dm-btn" onclick="toggleDark()" id="dm-ic">🌙</button>
+    <button class="tb-btn" id="pg-action" onclick="openModal('modal-order')">+ Order</button>
+    <button class="logout-btn" onclick="doLogout()">🚪</button>
+  </div>
+</div>
+<div id="page-dash" class="page active"></div>
+<div id="page-customers" class="page"></div>
+<div id="page-orders" class="page"></div>
+<div id="page-kitchen" class="page"></div>
+<div id="page-summary" class="page"></div>
+<div id="page-reports" class="page"></div>
+<div id="page-class" class="page"></div>
+
+<!-- All modals -->
+<div class="modal-overlay" id="modal-add-lady"><div class="modal">
+  <div class="modal-header"><div class="modal-title">👩 Lady Add</div><button class="modal-close" onclick="closeModal('modal-add-lady')">✕</button></div>
+  <div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="lady-name" placeholder="Lady ka naam"></div>
+  <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="lady-phone" type="tel" placeholder="Mobile number"></div>
+  <div class="form-group"><label class="form-label">💳 Plan</label>
+    <div class="plan-grid">
+      <div class="plan-opt" id="lplan-2500" onclick="selectLadyPlan(2500)"><div class="plan-price">₹2500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="lplan-2000" onclick="selectLadyPlan(2000)"><div class="plan-price">₹2000</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt sel" id="lplan-1500" onclick="selectLadyPlan(1500)"><div class="plan-price">₹1500</div><div class="plan-lbl">/Month</div></div>
+    </div>
+    <input type="hidden" id="lady-plan" value="1500">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-add-lady')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="saveLady()">✅ Save</button>
+  </div>
+</div></div><div class="modal">
+  <div class="modal-header"><div class="modal-title">👩 Ladies Class Set Karo</div><button class="modal-close" onclick="closeModal('modal-add-class-member')">✕</button></div>
+  <div class="form-group">
+    <label class="form-label">Aaj kitni ladies aayi? 👩</label>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:10px;justify-content:center">
+      <button onclick="adjCmCount(-1)" style="width:50px;height:50px;border-radius:14px;border:2px solid var(--br);background:var(--ib);font-size:26px;cursor:pointer;color:var(--tx);font-weight:800">−</button>
+      <div id="cm-count-disp" style="font-size:40px;font-weight:800;color:var(--or);min-width:50px;text-align:center">5</div>
+      <button onclick="adjCmCount(1)" style="width:50px;height:50px;border-radius:14px;border:2px solid var(--br);background:var(--ib);font-size:26px;cursor:pointer;color:var(--tx);font-weight:800">+</button>
+      <span style="font-size:28px">👩</span>
+    </div>
+    <input type="hidden" id="cm-count" value="5">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Ek lady kitni roti leti hai? 🫓</label>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:10px;justify-content:center">
+      <button onclick="adjCmChapati(-1)" style="width:50px;height:50px;border-radius:14px;border:2px solid var(--br);background:var(--ib);font-size:26px;cursor:pointer;color:var(--tx);font-weight:800">−</button>
+      <div id="cm-chapati-disp" style="font-size:40px;font-weight:800;color:var(--pu);min-width:50px;text-align:center">2</div>
+      <button onclick="adjCmChapati(1)" style="width:50px;height:50px;border-radius:14px;border:2px solid var(--br);background:var(--ib);font-size:26px;cursor:pointer;color:var(--tx);font-weight:800">+</button>
+      <span style="font-size:28px">🫓</span>
+    </div>
+    <input type="hidden" id="cm-chapati" value="2">
+  </div>
+  <div style="background:var(--ib);border-radius:12px;padding:12px;text-align:center;margin-top:4px">
+    <span style="font-size:13px;color:var(--sb)">Total Roti = </span>
+    <span id="cm-total-disp" style="font-size:20px;font-weight:800;color:var(--or)">10</span>
+    <span style="font-size:20px"> 🫓</span>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:14px">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-add-class-member')">Cancel</button>
+    <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveClassMember()">✅ Save</button>
+  </div>
+</div></div>
+<div class="modal-overlay" id="modal-customer"><div class="modal">
+  <div class="modal-header"><div class="modal-title">👤 Customer Add</div><button class="modal-close" onclick="closeModal('modal-customer')">✕</button></div>
+  <div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="c-name" placeholder="Customer naam"></div>
+  <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="c-phone" type="tel" placeholder="Mobile number"></div>
+  <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="c-addr" placeholder="Delivery address"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Zone</label><input class="form-input" id="c-zone" placeholder="Market Yard"></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-input" id="c-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option><option value="Both">🍽️ Both</option></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" id="c-start" type="date"></div>
+  <div class="form-group"><label class="form-label">🍽️ Meal</label><select class="form-input" id="c-meal"><option value="Both">🍽️ Both (Lunch + Dinner)</option><option value="Lunch">🌞 Sirf Lunch</option><option value="Dinner">🌙 Sirf Dinner</option></select></div>
+  <div class="form-group"><label class="form-label">💳 Plan</label>
+    <div class="plan-grid">
+      <div class="plan-opt" id="plan-2500" onclick="selectPlan(2500)"><div class="plan-price">₹2500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="plan-2000" onclick="selectPlan(2000)"><div class="plan-price">₹2000</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="plan-1500" onclick="selectPlan(1500)"><div class="plan-price">₹1500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="plan-custom" onclick="selectPlan(0)"><div class="plan-price">✏️</div><div class="plan-lbl">Custom</div></div>
+    </div>
+    <input class="form-input" id="c-custom-amt" type="number" placeholder="Custom amount" style="display:none;margin-top:8px">
+    <div id="c-custom-roti-wrap" style="display:none;margin-top:10px">
+      <label class="form-label">🫓 Roti per day</label>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button onclick="setCRoti(1)" id="cr-1" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">1</button>
+        <button onclick="setCRoti(2)" id="cr-2" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--or);background:#FFF3E0;font-weight:700;cursor:pointer;color:var(--or)">2</button>
+        <button onclick="setCRoti(3)" id="cr-3" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">3</button>
+        <button onclick="setCRoti(4)" id="cr-4" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">4</button>
+      </div>
+      <input type="hidden" id="c-custom-roti" value="2">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-customer')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="addCustomer()">✅ Save</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-customer"><div class="modal">
+  <div class="modal-header"><div class="modal-title">✏️ Customer Edit</div><button class="modal-close" onclick="closeModal('modal-edit-customer')">✕</button></div>
+  <input type="hidden" id="ec-id">
+  <div class="form-group"><label class="form-label">Naam *</label><input class="form-input" id="ec-name" placeholder="Customer naam"></div>
+  <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="ec-phone" type="tel" placeholder="Mobile number"></div>
+  <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="ec-addr" placeholder="Delivery address"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Zone</label><input class="form-input" id="ec-zone" placeholder="Market Yard"></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-input" id="ec-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option><option value="Both">🍽️ Both</option></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">🍽️ Meal</label><select class="form-input" id="ec-meal"><option value="Both">🍽️ Both (Lunch + Dinner)</option><option value="Lunch">🌞 Sirf Lunch</option><option value="Dinner">🌙 Sirf Dinner</option></select></div>
+  <div class="form-group"><label class="form-label">💳 Plan</label>
+    <div class="plan-grid">
+      <div class="plan-opt" id="eplan-2500" onclick="selectEditPlan(2500)"><div class="plan-price">₹2500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-2000" onclick="selectEditPlan(2000)"><div class="plan-price">₹2000</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-1500" onclick="selectEditPlan(1500)"><div class="plan-price">₹1500</div><div class="plan-lbl">/Month</div></div>
+      <div class="plan-opt" id="eplan-custom" onclick="selectEditPlan(0)"><div class="plan-price">✏️</div><div class="plan-lbl">Custom</div></div>
+    </div>
+    <input class="form-input" id="ec-custom-amt" type="number" placeholder="Custom amount" style="display:none;margin-top:8px">
+    <div id="ec-custom-roti-wrap" style="display:none;margin-top:10px">
+      <label class="form-label">🫓 Roti per day</label>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button onclick="setECRoti(1)" id="ecr-1" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">1</button>
+        <button onclick="setECRoti(2)" id="ecr-2" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--or);background:#FFF3E0;font-weight:700;cursor:pointer;color:var(--or)">2</button>
+        <button onclick="setECRoti(3)" id="ecr-3" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">3</button>
+        <button onclick="setECRoti(4)" id="ecr-4" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--br);background:var(--ib);font-weight:700;cursor:pointer;color:var(--tx)">4</button>
+      </div>
+      <input type="hidden" id="ec-custom-roti" value="2">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-edit-customer')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="saveEditCust()">✅ Update</button>
+  </div>
+</div></div>
+<div class="modal-overlay" id="modal-order"><div class="modal">
+  <div class="modal-header"><div class="modal-title">➕ New Order</div><button class="modal-close" onclick="closeModal('modal-order')">✕</button></div>
+  <div class="form-group"><label class="form-label">Customer *</label><select class="form-input" id="o-cust" onchange="autoFillAmt()"><option value="">-- Select --</option></select></div>
+  <div id="chutti-warn" style="display:none;background:#E74C3C;color:#fff;border-radius:12px;padding:12px;margin-bottom:10px;text-align:center;font-weight:800">🚫 IS CUSTOMER KI CHUTTI HAI!</div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Meal</label><select class="form-input" id="o-meal" onchange="autoFillAmt()"><option value="Lunch">🌞 Lunch</option><option value="Dinner">🌙 Dinner</option><option value="Both">🍽️ Both</option></select></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-input" id="o-type"><option value="Veg">🌿 Veg</option><option value="Non-Veg">🍗 Non-Veg</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Amount ₹</label><input class="form-input" id="o-amt" type="number" placeholder="Auto"></div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="o-date" type="date"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="o-note" placeholder="Special note..."></div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-order')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="addOrder()">✅ Add</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-bulk"><div class="modal">
+  <div class="modal-header"><div class="modal-title">⚡ Bulk Order</div><button class="modal-close" onclick="closeModal('modal-bulk')">✕</button></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Meal</label><select class="form-input" id="b-meal"><option value="Lunch">🌞 Lunch</option><option value="Dinner">🌙 Dinner</option><option value="Both">🍽️ Both</option></select></div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="b-date" type="date"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Customers</label><div id="bulk-custs" style="max-height:240px;overflow-y:auto;border:1px solid var(--br);border-radius:11px"></div></div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-bulk')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="doBulkOrder()">⚡ Add All</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-payment"><div class="modal">
+  <div class="modal-header"><div class="modal-title">💵 Payment</div><button class="modal-close" onclick="closeModal('modal-payment')">✕</button></div>
+  <div class="form-group"><label class="form-label">Customer *</label><select class="form-input" id="p-cust"><option value="">-- Select --</option></select></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Amount ₹ *</label><input class="form-input" id="p-amt" type="number" placeholder="Amount"></div>
+    <div class="form-group"><label class="form-label">Mode</label><select class="form-input" id="p-mode"><option>Cash</option><option>UPI</option><option>Online</option></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="p-date" type="date"></div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-payment')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="addPayment()">✅ Save</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-expense"><div class="modal">
+  <div class="modal-header"><div class="modal-title">📤 Expense</div><button class="modal-close" onclick="closeModal('modal-expense')">✕</button></div>
+  <div class="form-group"><label class="form-label">Category</label><select class="form-input" id="exp-cat"><option>Vegetables</option><option>Gas</option><option>Packaging</option><option>Salary</option><option>Transport</option><option>Other</option></select></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Amount ₹ *</label><input class="form-input" id="exp-amt" type="number"></div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="exp-date" type="date"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="exp-note" placeholder="Details..."></div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-expense')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="addExpense()">✅ Save</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-backup"><div class="modal">
+  <div class="modal-header"><div class="modal-title">💾 Backup & Restore</div><button class="modal-close" onclick="closeModal('modal-backup')">✕</button></div>
+  <button class="btn btn-primary btn-full" style="margin-bottom:12px" onclick="doBackup()">💾 Backup Download</button>
+  <div style="background:var(--ib);border-radius:13px;padding:14px;border:1px solid var(--br);margin-bottom:12px">
+    <div style="font-size:12px;color:var(--rd);margin-bottom:10px;font-weight:600">⚠️ Purana data replace ho jayega!</div>
+    <input type="file" id="restore-file" accept=".json" style="display:none" onchange="doRestore(this)">
+    <button class="btn btn-secondary btn-full" onclick="document.getElementById('restore-file').click()">📂 File Select Karo</button>
+  </div>
+  <div style="background:linear-gradient(135deg,#FFF3E0,#FFF8F0);border-radius:13px;padding:14px;border:2px solid var(--or)">
+    <div style="font-size:13px;font-weight:800;color:var(--or);margin-bottom:6px">📲 TiffinChef se Import</div>
+    <div style="font-size:11px;color:var(--sb);margin-bottom:10px">TiffinChef app ka Backup JSON file select karo — customers automatically import ho jayenge!</div>
+    <input type="file" id="tiffin-import-file" accept=".json" style="display:none" onchange="importFromTiffinChef(this)">
+    <button class="btn btn-primary btn-full" style="background:linear-gradient(135deg,#8E44AD,#9B59B6)" onclick="document.getElementById('tiffin-import-file').click()">🍱 TiffinChef Customers Import Karo</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-history"><div class="modal" style="max-height:95vh">
+  <div class="modal-header"><div class="modal-title">📅 History</div><button class="modal-close" onclick="closeModal('modal-history')">✕</button></div>
+  <div id="history-content"></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-qr"><div class="modal">
+  <div class="modal-header"><div class="modal-title">📲 UPI Payment</div><button class="modal-close" onclick="closeModal('modal-qr')">✕</button></div>
+  <div id="qr-content" style="text-align:center;padding:10px 0"></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-set-pin"><div class="modal">
+  <div class="modal-header"><div class="modal-title">🔒 PIN Set Karo</div><button class="modal-close" onclick="closeModal('modal-set-pin')">✕</button></div>
+  <div class="form-group"><label class="form-label">Owner PIN (4 digit)</label><input class="form-input" id="new-owner-pin" type="number" placeholder="e.g. 1234" maxlength="4"></div>
+  <div class="form-group"><label class="form-label">Delivery Boy PIN (4 digit)</label><input class="form-input" id="new-del-pin" type="number" placeholder="e.g. 5678" maxlength="4"></div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-set-pin')">Cancel</button>
+    <button class="btn btn-primary" style="flex:2;justify-content:center" onclick="savePins()">✅ Save PINs</button>
+  </div>
+</div></div>
+</div><!-- end owner-app -->
+
+<!-- DELIVERY APP -->
+<div id="delivery-app">
+<div class="d-topbar">
+  <div style="font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800">🛵 Delivery</div>
+  <div style="font-size:11px;opacity:.8;margin-top:2px" id="d-boy-label">Asan Tiffin</div>
+  <div class="d-score-grid">
+    <div class="d-score-box"><div class="d-score-val" id="d-total">0</div><div class="d-score-lbl">TOTAL</div></div>
+    <div class="d-score-box"><div class="d-score-val" id="d-done" style="color:#4ADE80">0</div><div class="d-score-lbl">DONE</div></div>
+    <div class="d-score-box"><div class="d-score-val" id="d-baaki" style="color:#FCD34D">0</div><div class="d-score-lbl">BAAKI</div></div>
+  </div>
+</div>
+<div class="d-tabs">
+  <div class="d-tab active" id="dt-orders" onclick="dTab('orders')">📦 Orders</div>
+  <div class="d-tab" id="dt-collection" onclick="dTab('collection')">📦 Collection</div>
+</div>
+<div id="d-page-orders" style="padding:14px"></div>
+<div id="d-page-collection" style="padding:14px;display:none"></div>
+<div style="position:fixed;bottom:16px;right:16px">
+  <button onclick="dLoadOrders()" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--pu),#9B59B6);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(142,68,173,.4)">🔄</button>
+  <button onclick="doLogout()" style="width:52px;height:52px;border-radius:50%;background:var(--cd);border:1px solid var(--br);font-size:20px;cursor:pointer;margin-top:8px;display:block">🚪</button>
+</div>
+</div>
+
+<div class="toast-msg" id="toast"></div>
+
+<script>
+var DB={customers:[],orders:[],payments:[],expenses:[],extraIncome:[]};
+var UPI='nakate2337-3@okaxis';
+var selPlan=null,custTab='tiffin';
+var currentRole='';
+var pinBuffer='';
+var selectedRole='owner';
+var dActiveTab='orders';
+var deferredPrompt=null;
+
+// DEFAULT PINS
+var PINS={owner:'1234',delivery:'5678'};
+
+var FB_URL='https://asan-tiffin-87dde-default-rtdb.firebaseio.com/asanData.json';
+function save(){
+  try{localStorage.setItem('at3',JSON.stringify(DB));}catch(e){}
+  try{fetch(FB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(DB)}).catch(function(){});}catch(e){}
+}
+function load(){try{var s=localStorage.getItem('at3');if(s)DB=JSON.parse(s);}catch(e){}}
+function savePinsStore(){localStorage.setItem('atPins',JSON.stringify(PINS));}
+function loadPins(){try{var s=localStorage.getItem('atPins');if(s)PINS=JSON.parse(s);}catch(e){}}
+function today(){var d=new Date(),m=d.getMonth()+1,dy=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dy<10?'0':'')+dy;}
+function fmt(ds){var d=new Date(ds);return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];}
+function getDR(plan){var n=new Date();return Math.round(plan/new Date(n.getFullYear(),n.getMonth()+1,0).getDate());}
+function toast(msg,dur){var t=document.getElementById('toast');t.textContent=msg;t.className='toast-msg show';setTimeout(function(){t.className='toast-msg';},dur||2500);}
+function toggleDark(){document.body.classList.toggle('dark');var d=document.body.classList.contains('dark');localStorage.setItem('dark',d?'1':'0');document.getElementById('dm-ic').textContent=d?'☀️':'🌙';}
+
+// PWA Install
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('install-banner').style.display='flex';});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('install-banner').style.display='none';});}}
+
+// LOGIN / PIN
+loadPins();
+function selectRole(r){selectedRole=r;document.querySelectorAll('.role-btn').forEach(function(b){b.classList.remove('active');});document.getElementById('role-'+r).classList.add('active');document.getElementById('pin-label').textContent=r==='owner'?'Owner PIN daalo':'Delivery Boy PIN daalo';pinBuffer='';updatePinDots();}
+function updatePinDots(){for(var i=0;i<4;i++){var d=document.getElementById('pd'+i);d.classList.toggle('filled',i<pinBuffer.length);}}
+function pinKey(k){
+  if(k==='clr'){openSetPinModal();return;}
+  if(k==='del'){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();document.getElementById('pin-error').textContent='';return;}
+  if(pinBuffer.length>=4)return;
+  pinBuffer+=k;updatePinDots();
+  if(pinBuffer.length===4){
+    var correct=selectedRole==='owner'?PINS.owner:PINS.delivery;
+    if(pinBuffer===correct){doLogin(selectedRole);}
+    else{document.getElementById('pin-error').textContent='❌ Galat PIN! Try again';pinBuffer='';updatePinDots();}
+  }
+}
+function openSetPinModal(){closeModal('modal-set-pin');document.getElementById('modal-set-pin').classList.add('open');}
+function savePins(){var op=document.getElementById('new-owner-pin').value,dp=document.getElementById('new-del-pin').value;if(op.length<4||dp.length<4){toast('⚠️ 4 digit PIN zaroor!');return;}PINS.owner=op;PINS.delivery=dp;savePinsStore();closeModal('modal-set-pin');toast('✅ PINs save ho gaye! 🔒');}
+function doLogin(role){currentRole=role;document.getElementById('login-screen').classList.add('hidden');if(role==='owner'){document.getElementById('owner-app').style.display='block';document.getElementById('delivery-app').style.display='none';load();renderDash();}else{document.getElementById('owner-app').style.display='none';document.getElementById('delivery-app').style.display='block';load();dLoadOrders();}pinBuffer='';}
+function doLogout(){currentRole='';pinBuffer='';document.getElementById('login-screen').classList.remove('hidden');document.getElementById('owner-app').style.display='none';document.getElementById('delivery-app').style.display='none';selectedRole='owner';document.querySelectorAll('.role-btn').forEach(function(b){b.classList.remove('active');});document.getElementById('role-owner').classList.add('active');updatePinDots();document.getElementById('install-banner').style.zIndex='0';}
+
+function openModal(id){load();var el=document.getElementById(id);if(!el)return;el.classList.add('open');if(id==='modal-order'){populateCustSelect('o-cust');document.getElementById('o-date').value=today();}if(id==='modal-payment'){populateCustSelect('p-cust');document.getElementById('p-date').value=today();}if(id==='modal-bulk'){renderBulkCusts();document.getElementById('b-date').value=today();}if(id==='modal-expense')document.getElementById('exp-date').value=today();}
+function closeModal(id){var el=document.getElementById(id);if(el)el.classList.remove('open');}
+function populateCustSelect(id){var s=document.getElementById(id);s.innerHTML='<option value="">-- Select --</option>';DB.customers.forEach(function(c){s.innerHTML+='<option value="'+c.id+'">'+c.name+'</option>';});}
+
+function showPage(n){
+  load();
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.bn-item').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-'+n).classList.add('active');
+  var nav=document.getElementById('nav-'+n);if(nav)nav.classList.add('active');
+  var titles={dash:'🍱 Asan Tiffin',customers:'👥 Customers',orders:'📦 Orders',kitchen:'👨‍🍳 Kitchen',summary:'📊 Monthly Summary',reports:'💰 Reports','class':'👩 Ladies Class'};
+  var acts={dash:"openModal('modal-order')",customers:"openModal('modal-customer')",orders:"openModal('modal-order')",kitchen:"openModal('modal-bulk')",summary:'',reports:"openModal('modal-backup')","class":"openAddClassMember()"};
+  var actTxt={dash:'+ Order',customers:'+ Add',orders:'+ Order',kitchen:'⚡ Bulk',summary:'',reports:'💾 Backup','class':'+ Member'};
+  document.getElementById('pg-title').textContent=titles[n]||n;
+  var ab=document.getElementById('pg-action');ab.textContent=actTxt[n]||'+';ab.setAttribute('onclick',acts[n]||'');ab.style.display=(!actTxt[n])?'none':'';
+  if(n==='dash')renderDash();if(n==='customers')renderCusts('');if(n==='orders')renderOrders('');
+  if(n==='kitchen')renderKitchen();if(n==='summary')renderSummary();if(n==='reports')renderReports();
+  if(n==='class')renderClass();
+}
+
+function setCRoti(v){
+  [1,2,3,4].forEach(function(n){
+    var b=document.getElementById('cr-'+n);
+    if(b){b.style.border=n===v?'2px solid var(--or)':'2px solid var(--br)';b.style.background=n===v?'#FFF3E0':'var(--ib)';b.style.color=n===v?'var(--or)':'var(--tx)';}
+  });
+  document.getElementById('c-custom-roti').value=v;
+}
+function selectPlan(v){selPlan=v;document.querySelectorAll('.plan-opt').forEach(function(o){o.classList.remove('sel');});document.getElementById('plan-'+(v||'custom')).classList.add('sel');document.getElementById('c-custom-amt').style.display=v===0?'block':'none';document.getElementById('c-custom-roti-wrap').style.display=v===0?'block':'none';}
+function autoFillAmt(){var cid=parseInt(document.getElementById('o-cust').value),meal=document.getElementById('o-meal').value;if(!cid)return;var c=DB.customers.find(function(x){return x.id===cid;});if(c&&c.plan){var dr=getDR(c.plan),lr=Math.round(dr/2);document.getElementById('o-amt').value=meal==='Lunch'?lr:meal==='Dinner'?dr-lr:dr;}var onC=DB.orders.some(function(o){return o.custId===cid&&o.date===today()&&o.isChutti;});document.getElementById('chutti-warn').style.display=onC?'block':'none';}
+function due(cid){var t=0;DB.orders.forEach(function(o){if(o.custId===cid&&o.status!=='Cancelled')t+=o.amount;});DB.payments.forEach(function(p){if(p.custId===cid)t-=p.amount;});return Math.max(0,t);}
+
+function addCustomer(){
+  var name=document.getElementById('c-name').value.trim(),phone=document.getElementById('c-phone').value.trim();
+  if(!name||!phone){toast('⚠️ Naam aur phone zaroor!');return;}
+  var plan=null;if(selPlan===0)plan=parseInt(document.getElementById('c-custom-amt').value)||null;else if(selPlan)plan=selPlan;
+  var cid=Date.now();
+  var roti=plan>=2500?4:plan>=2000?3:plan>=1500?2:parseInt(document.getElementById('c-custom-roti').value)||2;
+  var meal=document.getElementById('c-meal').value||'Both';
+  DB.customers.push({id:cid,name:name,phone:phone,address:document.getElementById('c-addr').value.trim(),zone:document.getElementById('c-zone').value.trim(),type:document.getElementById('c-type').value,startDate:document.getElementById('c-start').value||today(),plan:plan,roti:roti,meal:meal});
+  if(!DB.phonebook)DB.phonebook=[];
+  if(!DB.phonebook.find(function(x){return x.phone===phone;}))DB.phonebook.push({id:cid+1,name:name,phone:phone});
+  if(plan){var dr=getDR(plan),lr=Math.round(dr/2),dinr=dr-lr,sd=new Date(document.getElementById('c-start').value||today()),n=new Date(),yr=n.getFullYear(),mo=n.getMonth(),dim=new Date(yr,mo+1,0).getDate(),cnt=0;for(var day=sd.getDate();day<=dim;day++){var cm=mo+1,dk=yr+'-'+(cm<10?'0':'')+cm+'-'+(day<10?'0':'')+day;DB.orders.push({id:Date.now()+cnt,custId:cid,date:dk,meal:'Lunch',type:document.getElementById('c-type').value==='Non-Veg'?'Non-Veg':'Veg',amount:lr,status:'Pending',note:''});cnt++;DB.orders.push({id:Date.now()+cnt,custId:cid,date:dk,meal:'Dinner',type:document.getElementById('c-type').value==='Non-Veg'?'Non-Veg':'Veg',amount:dinr,status:'Pending',note:''});cnt++;}toast('✅ '+name+' add! '+cnt+' orders! 🎉',4000);}else{toast('✅ Customer add!');}
+  save();closeModal('modal-customer');['c-name','c-phone','c-addr','c-zone','c-custom-amt'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('c-custom-roti').value='2';document.getElementById('c-custom-roti-wrap').style.display='none';setCRoti(2);selPlan=null;document.querySelectorAll('.plan-opt').forEach(function(o){o.classList.remove('sel');});document.getElementById('c-custom-amt').style.display='none';renderCusts('');renderDash();
+}
+
+function delCust(id){if(!confirm('Customer delete karo?'))return;DB.customers=DB.customers.filter(function(c){return c.id!==id;});save();toast('🗑️ Delete!');renderCusts('');}
+function orderFor(cid){openModal('modal-order');setTimeout(function(){document.getElementById('o-cust').value=cid;autoFillAmt();},100);}
+function payFor(cid){openModal('modal-payment');setTimeout(function(){document.getElementById('p-cust').value=cid;},100);}
+function addOrder(){var cid=parseInt(document.getElementById('o-cust').value),amt=parseInt(document.getElementById('o-amt').value);if(!cid){toast('⚠️ Customer select!');return;}if(!amt){toast('⚠️ Amount daalo!');return;}var tod=today(),c=DB.customers.find(function(x){return x.id===cid;}),onC=DB.orders.some(function(o){return o.custId===cid&&o.date===tod&&o.isChutti;});if(onC&&!confirm('🏖️ '+(c?c.name:'?')+' ki chutti hai! Phir bhi?')){return;}DB.orders.push({id:Date.now(),custId:cid,type:document.getElementById('o-type').value,meal:document.getElementById('o-meal').value,qty:1,amount:amt,date:document.getElementById('o-date').value||tod,note:document.getElementById('o-note').value.trim(),status:'Pending'});save();closeModal('modal-order');document.getElementById('o-note').value='';document.getElementById('o-amt').value='';toast('✅ Order add!');renderOrders('');renderKitchen();renderDash();}
+function renderBulkCusts(){var h='';DB.customers.forEach(function(c){h+='<div style="display:flex;align-items:center;gap:10px;padding:11px;border-bottom:1px solid var(--br)"><input type="checkbox" id="bc-'+c.id+'" checked style="width:18px;height:18px;accent-color:var(--or)"><label for="bc-'+c.id+'" style="font-weight:600;font-size:13px;flex:1;color:var(--tx)">'+c.name+'</label>'+(c.zone?'<span style="font-size:10px;color:var(--pu);font-weight:700">'+c.zone+'</span>':'')+'</div>';});document.getElementById('bulk-custs').innerHTML=h||'<div style="text-align:center;color:var(--sb);padding:20px">Koi customer nahi</div>';}
+function doBulkOrder(){var meal=document.getElementById('b-meal').value,date=document.getElementById('b-date').value||today(),count=0;DB.customers.forEach(function(c){var cb=document.getElementById('bc-'+c.id);if(!cb||!cb.checked)return;var dr=getDR(c.plan||0),lr=Math.round(dr/2),amt=meal==='Lunch'?lr:meal==='Dinner'?dr-lr:dr;DB.orders.push({id:Date.now()+count,custId:c.id,type:c.type||'Veg',meal:meal,qty:1,amount:amt,date:date,note:'',status:'Preparing'});count++;});save();closeModal('modal-bulk');toast('✅ '+count+' orders added!');renderDash();renderKitchen();}
+function addPayment(){var cid=parseInt(document.getElementById('p-cust').value),amt=parseInt(document.getElementById('p-amt').value);if(!cid||!amt){toast('⚠️ Customer aur amount!');return;}var c=DB.customers.find(function(x){return x.id===cid;});DB.payments.push({id:Date.now(),custId:cid,amount:amt,mode:document.getElementById('p-mode').value,date:document.getElementById('p-date').value||today()});save();closeModal('modal-payment');document.getElementById('p-amt').value='';toast('✅ ₹'+amt+' saved!');renderDash();renderCusts('');if(c&&c.phone){var rem=due(cid),msg='✅ *आसान टिफिन - पेमेंट मिळाले!*\n\nनमस्कार *'+c.name+'* जी! 🙏\n💰 *₹'+amt+' मिळाले*\n'+(rem>0?'⏳ बाकी: ₹'+rem:'🎉 खाते क्लियर!')+'\n\n_आसान टिफिन_ 🍛';setTimeout(function(){if(confirm('💬 WA bhejein?'))window.open('https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');},300);}}
+function addExpense(){var amt=parseInt(document.getElementById('exp-amt').value);if(!amt){toast('⚠️ Amount!');return;}DB.expenses.push({id:Date.now(),category:document.getElementById('exp-cat').value,amount:amt,date:document.getElementById('exp-date').value||today(),note:document.getElementById('exp-note').value.trim()});save();closeModal('modal-expense');document.getElementById('exp-amt').value='';document.getElementById('exp-note').value='';toast('✅ Expense saved!');renderReports();}
+function delExp(id){DB.expenses=DB.expenses.filter(function(e){return e.id!==id;});save();renderReports();}
+function delOrder(id){DB.orders=DB.orders.filter(function(o){return o.id!==id;});save();renderOrders('');renderKitchen();renderDash();}
+function updateStatus(id,status){
+  for(var i=0;i<DB.orders.length;i++){
+    if(DB.orders[i].id===id){
+      DB.orders[i].status=status;
+      if(status==='Delivered'){
+        DB.orders[i].deliveredTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        DB.orders[i].tiffinCollected=false;
+        // WhatsApp delivery notification
+        var o=DB.orders[i];
+        var c=DB.customers.find(function(x){return x.id===o.custId;});
+        if(c&&c.phone){
+          var meal=o.meal==='Lunch'?'दुपारचे जेवण':'रात्रीचे जेवण';
+          var msg='🍱 *आसान टिफिन*\n\nनमस्कार *'+c.name+'* जी! 🙏\n\n✅ तुमचे *'+meal+'* टिफिन पोहोचले!\n\n_जेवणाचा आनंद घ्या!_ 😊\n\n— *आसान टिफिन* 🍛';
+          setTimeout(function(ph,m2){
+            window.open('https://wa.me/91'+ph+'?text='+encodeURIComponent(m2),'_blank');
+          }.bind(null,c.phone.replace(/\D/g,''),msg),400);
+        }
+      }
+      break;
+    }
+  }
+  save();renderKitchen();renderOrders('');renderDash();
+}
+function markTiffinCollected(id){for(var i=0;i<DB.orders.length;i++){if(DB.orders[i].id===id){DB.orders[i].tiffinCollected=true;DB.orders[i].collectedTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});break;}}save();toast('📦 Tiffin collected!');renderKitchen();renderDash();}
+function markChutti(cid){var c=DB.customers.find(function(x){return x.id===cid;});if(!c)return;var days=parseInt(prompt('🏖️ '+c.name+' - Kitne din chutti?','1'));if(!days||days<1||isNaN(days))return;var added=0;for(var d=0;d<days;d++){var dt=new Date();dt.setDate(dt.getDate()+d);var m=dt.getMonth()+1,dy=dt.getDate(),dk=dt.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dy<10?'0':'')+dy;if(!DB.orders.some(function(o){return o.custId===cid&&o.date===dk&&o.isChutti;})){DB.orders.push({id:Date.now()+d,custId:cid,type:c.type||'Veg',meal:'Both',qty:1,amount:0,date:dk,note:'🏖️ Chutti',status:'Cancelled',isChutti:true});added++;}}save();toast('🏖️ '+added+' din chutti!');renderCusts('');renderDash();}
+function sendWA(cid){var c=DB.customers.find(function(x){return x.id===cid;});if(!c)return;var d=due(cid);window.open('https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('🍱 *आसान टिफिन*\n\nनमस्कार *'+c.name+'* जी! 🙏\n\n'+(c.plan?'💳 प्लान: ₹'+c.plan+'/महिना\n':'')+(d>0?'⏳ *थकबाकी: ₹'+d+'*\n':'✅ खाते क्लियर!\n')+'\n💳 UPI: *'+UPI+'*\n\n_आसान टिफिन_ 🍛'),'_blank');}
+function sendBill(cid){var c=DB.customers.find(function(x){return x.id===cid;});if(!c)return;var n=new Date(),del2=0,canc=0,tAmt=0,paid=0;DB.orders.forEach(function(o){var dd=new Date(o.date);if(o.custId===cid&&dd.getMonth()===n.getMonth()&&dd.getFullYear()===n.getFullYear()){if(o.status==='Delivered'){del2++;tAmt+=o.amount;}else if(o.status==='Cancelled')canc++;}});DB.payments.forEach(function(p){var dd=new Date(p.date);if(p.custId===cid&&dd.getMonth()===n.getMonth()&&dd.getFullYear()===n.getFullYear())paid+=p.amount;});var bal=tAmt-paid;window.open('https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('🍱 *आसान टिफिन - महिना बिल*\n━━━━━━━━━━\n👤 '+c.name+'\n📅 '+n.toLocaleDateString('mr-IN',{month:'long',year:'numeric'})+'\n━━━━━━━━━━\n✅ डिलिव्हरी: '+del2+' दिवस\n❌ सुट्टी: '+canc+' दिवस\n💰 एकूण: ₹'+tAmt+'\n💵 भरले: ₹'+paid+'\n'+(bal>0?'⏳ *बाकी: ₹'+bal+'*':'✅ क्लियर!')+'\n━━━━━━━━━━\n💳 UPI: *'+UPI+'*\n\n_आसान टिफिन_ 🍛'),'_blank');}
+function showQR(cid){var c=DB.customers.find(function(x){return x.id===cid;});if(!c)return;var d=due(cid),upiLink='upi://pay?pa='+UPI+'&pn=Asan+Tiffin&cu=INR&am='+d,qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(upiLink);document.getElementById('qr-content').innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:12px">'+c.name+' — ₹'+d+' due</div><div style="display:flex;justify-content:center;margin-bottom:12px"><img src="'+qrUrl+'" width="200" height="200" style="border-radius:12px"></div><div style="background:var(--ib);border-radius:10px;padding:11px;margin-bottom:12px"><div style="font-size:10px;color:var(--sb)">UPI ID</div><div style="font-weight:700">'+UPI+'</div></div><a href="'+upiLink+'" class="btn btn-primary btn-full" style="text-decoration:none;justify-content:center">💳 Pay Now</a>';openModal('modal-qr');}
+function showHistory(cid){var c=DB.customers.find(function(x){return x.id===cid;});if(!c)return;var monthsMap={};DB.orders.forEach(function(o){if(o.custId!==cid)return;var d=new Date(o.date),key=d.getFullYear()+'-'+(d.getMonth()+1);if(!monthsMap[key])monthsMap[key]={year:d.getFullYear(),month:d.getMonth(),orders:[]};monthsMap[key].orders.push(o);});var mN=['January','February','March','April','May','June','July','August','September','October','November','December'],keys=Object.keys(monthsMap).sort().reverse();var h='<div style="font-weight:700;font-size:14px;margin-bottom:12px">👤 '+c.name+'</div>';if(!keys.length){h+='<div class="empty"><div class="ei">📅</div>Koi history nahi</div>';}else keys.forEach(function(key){var md=monthsMap[key],del2=0,canc=0,payable=0,mPaid=0;md.orders.forEach(function(o){if(o.status==='Delivered'){del2++;payable+=o.amount;}else if(o.status==='Cancelled')canc++;});DB.payments.forEach(function(p){var pd=new Date(p.date);if(p.custId===cid&&pd.getMonth()===md.month&&pd.getFullYear()===md.year)mPaid+=p.amount;});var rem=Math.max(0,payable-mPaid);h+='<div style="background:var(--ib);border-radius:13px;padding:13px;margin-bottom:12px;border:1px solid var(--br)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-weight:800;font-size:13px">📅 '+mN[md.month]+' '+md.year+'</div><span class="pill '+(rem>0?'p-red':'p-green')+'">'+(rem>0?'₹'+rem+' due':'✅ Clear')+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;text-align:center"><div style="background:var(--cd);border-radius:8px;padding:7px"><div style="font-size:15px;font-weight:800;color:var(--gn)">'+del2+'</div><div style="font-size:9px;color:var(--sb)">Delivered</div></div><div style="background:var(--cd);border-radius:8px;padding:7px"><div style="font-size:15px;font-weight:800;color:var(--rd)">'+canc+'</div><div style="font-size:9px;color:var(--sb)">Chutti</div></div><div style="background:var(--cd);border-radius:8px;padding:7px"><div style="font-size:14px;font-weight:800;color:var(--or)">₹'+payable+'</div><div style="font-size:9px;color:var(--sb)">Total</div></div><div style="background:var(--cd);border-radius:8px;padding:7px"><div style="font-size:14px;font-weight:800;color:var(--bl)">₹'+mPaid+'</div><div style="font-size:9px;color:var(--sb)">Paid</div></div></div></div>';});document.getElementById('history-content').innerHTML=h;openModal('modal-history');}
+function doBackup(){var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a'),d=new Date();a.download='AsanTiffin_'+d.getDate()+'-'+(d.getMonth()+1)+'-'+d.getFullYear()+'.json';a.href=url;a.click();URL.revokeObjectURL(url);toast('✅ Backup download!');}
+function doRestore(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){try{var data=JSON.parse(e.target.result);if(!data.customers){toast('⚠️ Invalid!');return;}DB=data;save();closeModal('modal-backup');toast('✅ Restore ho gaya!');renderDash();}catch(err){toast('⚠️ File galat!');}};reader.readAsText(file);}
+
+// ===== RENDER FUNCTIONS =====
+function renderDash(){
+  load();var tod=today(),n=new Date(),hr=n.getHours();
+  // Month orders
+  var monthOrds=DB.orders.filter(function(o){var d=new Date(o.date);return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()&&!o.isChutti;});
+  var monthTotal=monthOrds.length;
+  var monthCancelled=monthOrds.filter(function(o){return o.status==='Cancelled';}).length;
+  // Today orders - filter by time (Lunch: 7AM-6PM, Dinner: 6PM-7AM next day)
+  var todOrds=DB.orders.filter(function(o){
+    if(o.date!==tod||o.isChutti) return false;
+    if(o.meal==='Lunch') return hr>=7&&hr<18; // 7AM to 6PM
+    if(o.meal==='Dinner') return hr>=18||hr<7; // 6PM to 7AM
+    return true;
+  });
+  var todAllOrds=DB.orders.filter(function(o){return o.date===tod&&!o.isChutti;});
+  var delv=todAllOrds.filter(function(o){return o.status==='Delivered';}).length;
+  var pend=DB.orders.filter(function(o){return o.status==='Pending'||o.status==='Preparing'||o.status==='On the Way';}).length;
+  var dueCusts=DB.customers.filter(function(c){return due(c.id)>0;});
+  var sc={Pending:'p-yellow',Preparing:'p-blue','On the Way':'p-orange',Delivered:'p-green',Cancelled:'p-red'};
+  var cd=getTodayClass();
+  var classCount=cd.count||0;
+  var classTotalRoti=cd.total||0;
+  // Total roti = all customers roti + ladies roti
+  var custTotalRoti=DB.customers.reduce(function(s,c){
+    var r=c.roti||(c.plan>=2500?4:c.plan>=2000?3:2);
+    return s+r;
+  },0);
+  var grandTotalRoti=custTotalRoti+classTotalRoti;
+
+  var h='<div class="banner"><div class="banner-title">🍱 Asan Tiffin</div><div class="banner-sub">Asan Ghar Ka Khana</div><div class="banner-badge">'+n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+'</div></div>';
+  h+=renderCarryOver();
+
+  // Stat cards - Orders shown as total/cancelled
+  h+='<div class="stat-grid">';
+  h+='<div class="stat-card"><div class="stat-ic">📦</div><div class="stat-val" style="color:var(--bl);font-size:20px">'+monthTotal+'<span style="color:var(--rd);font-size:14px"> / '+monthCancelled+'</span></div><div class="stat-lbl">Orders / Cancel</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">👥</div><div class="stat-val" style="color:var(--or)">'+DB.customers.length+'</div><div class="stat-lbl">Customers</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">🛵</div><div class="stat-val" style="color:var(--gd)">'+pend+'</div><div class="stat-lbl">Baaki</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">⏳</div><div class="stat-val" style="color:var(--rd)">'+dueCusts.length+'</div><div class="stat-lbl">Due</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">✅</div><div class="stat-val" style="color:var(--gn)">'+delv+'</div><div class="stat-lbl">Delivered</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">💰</div><div class="stat-val" style="color:var(--gn);font-size:16px">'+dueCusts.length+'</div><div class="stat-lbl">Due Custs</div></div>';
+  h+='<div class="stat-card"><div class="stat-ic">🫓</div><div class="stat-val" style="color:var(--pu)">'+grandTotalRoti+'</div><div class="stat-lbl">Aaj ki Roti</div></div>';
+  h+='</div>';
+
+  if(classCount){
+    h+='<div class="card" style="border:2px solid var(--pu);margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between">';
+    h+='<div><div style="font-weight:800;font-size:14px">👩 Ladies Class</div><div style="font-size:12px;color:var(--sb);margin-top:2px">'+classCount+' ladies × '+(cd.rotiEach||2)+' roti</div></div>';
+    h+='<div style="text-align:right"><div style="font-size:28px;font-weight:800;color:var(--pu)">'+classTotalRoti+'</div><div style="font-size:10px;color:var(--sb)">Roti 🫓 aaj</div></div>';
+    h+='</div></div>';
+  }
+
+  // Chutti wale customers aaj
+  var chuttiCusts=DB.customers.filter(function(c){
+    return DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.isChutti;});
+  });
+  if(chuttiCusts.length){
+    var mealType=hr>=7&&hr<18?'Lunch':'Dinner';
+    h+='<div class="card" style="border:2px solid var(--rd);margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+    h+='<div><div style="font-weight:800;font-size:14px">🏖️ Aaj Chutti</div><div style="font-size:12px;color:var(--sb);margin-top:2px">'+chuttiCusts.length+' customers</div></div>';
+    h+='<button onclick="sendChuttiReminder(\''+mealType+'\')" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer">📲 '+mealType+' Remind</button>';
+    h+='</div>';
+    chuttiCusts.forEach(function(c){
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid var(--br)">';
+      h+='<span style="font-size:13px;font-weight:600">🏖️ '+c.name+'</span>';
+      h+='<span style="font-size:11px;color:var(--sb)">'+c.phone+'</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  // Kal se wapas aane wale customers
+  var tmrw=new Date();tmrw.setDate(tmrw.getDate()+1);
+  var tm=tmrw.getMonth()+1,td=tmrw.getDate(),ty=tmrw.getFullYear();
+  var tmrwKey=ty+'-'+(tm<10?'0':'')+tm+'-'+(td<10?'0':'')+td;
+  var wapasAaj=DB.customers.filter(function(c){
+    var aajChutti=DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.isChutti;});
+    var kalChutti=DB.orders.some(function(o){return o.custId===c.id&&o.date===tmrwKey&&o.isChutti;});
+    return aajChutti&&!kalChutti;
+  });
+  if(wapasAaj.length){
+    h+='<div class="card" style="border:2px solid var(--gn);margin-bottom:12px">';
+    h+='<div style="font-weight:800;font-size:14px;margin-bottom:8px">✅ Kal se Wapas!</div>';
+    wapasAaj.forEach(function(c){
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid var(--br)">';
+      h+='<span style="font-size:13px;font-weight:600;color:var(--gn)">✅ '+c.name+'</span>';
+      h+='<span style="font-size:11px;color:var(--sb)">kal se tiffin! 🍱</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  h+='<div class="card"><div class="card-title">⚡ Quick Actions</div><div class="qa-grid"><button class="qa-btn" style="background:linear-gradient(135deg,var(--or),var(--or2));color:#fff" onclick="openModal(\'modal-order\')"><span class="qa-ic">➕</span>New Order</button><button class="qa-btn" style="background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff" onclick="openModal(\'modal-bulk\')"><span class="qa-ic">⚡</span>Bulk Order</button><button class="qa-btn" style="background:linear-gradient(135deg,#2D6A4F,#52B788);color:#fff" onclick="openModal(\'modal-customer\')"><span class="qa-ic">👤</span>Add Customer</button><button class="qa-btn" style="background:linear-gradient(135deg,var(--gd),#E67E22);color:#fff" onclick="openModal(\'modal-payment\')"><span class="qa-ic">💵</span>Payment</button></div></div>';
+  h+='<div class="card"><div class="card-title">💸 Quick Expense</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">';
+  var qe=[['🥦','Sabji'],['🛵','Petrol'],['🛒','Kirana'],['✏️','Other']];
+  qe.forEach(function(e){h+='<button onclick="quickExpense(\''+e[1]+'\')" style="border:none;border-radius:14px;padding:12px 6px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:700;font-size:11px;text-align:center;background:var(--ib);border:1.5px solid var(--br);color:var(--tx)"><div style="font-size:22px;margin-bottom:4px">'+e[0]+'</div>'+e[1]+'</button>';});
+  h+='</div></div>';
+  h+='<div class="card"><div class="card-title">💰 Quick Income</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">';
+  var qi=[['🍱','Extra Tiffin'],['🫓','Extra Roti'],['🎉','Catering'],['✏️','Other']];
+  qi.forEach(function(e){h+='<button onclick="quickIncome(\''+e[1]+'\')" style="border:none;border-radius:14px;padding:12px 6px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:700;font-size:11px;text-align:center;background:#F0FFF4;border:1.5px solid var(--gn);color:var(--gn)"><div style="font-size:22px;margin-bottom:4px">'+e[0]+'</div>'+e[1]+'</button>';});
+  h+='</div></div>';
+
+  // Today orders filtered by time
+  var mealLabel=hr>=7&&hr<18?'🌞 Lunch Orders (7AM-6PM)':'🌙 Dinner Orders (6PM-7AM)';
+  h+='<div class="card"><div class="sec-header"><div class="sec-title">'+mealLabel+'</div><button class="btn btn-secondary btn-sm" onclick="showPage(\'orders\')">Sab</button></div>';
+  if(!todOrds.length) h+='<div class="empty"><div class="ei">📦</div>Abhi koi order nahi</div>';
+  todOrds.slice(0,5).forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;});h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+(o.meal||'')+' • ₹'+o.amount+'</div></div><span class="pill '+(sc[o.status]||'p-yellow')+'">'+o.status+'</span></div>';});
+  h+='</div>';
+
+  if(dueCusts.length){h+='<div class="card"><div class="card-title">⏳ Payment Due</div>';dueCusts.forEach(function(c){var d=due(c.id);h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+c.name+'</div><div style="font-size:11px;color:var(--sb)">'+c.phone+'</div></div><div style="display:flex;align-items:center;gap:8px"><div style="font-weight:700;color:var(--rd)">₹'+d+'</div><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button></div></div>';});h+='</div>';}
+  document.getElementById('page-dash').innerHTML=h;
+}
+
+var selEditPlan=null;
+function setECRoti(v){
+  [1,2,3,4].forEach(function(n){
+    var b=document.getElementById('ecr-'+n);
+    if(b){b.style.border=n===v?'2px solid var(--or)':'2px solid var(--br)';b.style.background=n===v?'#FFF3E0':'var(--ib)';b.style.color=n===v?'var(--or)':'var(--tx)';}
+  });
+  document.getElementById('ec-custom-roti').value=v;
+}
+function selectEditPlan(p){
+  selEditPlan=p;
+  document.querySelectorAll('[id^="eplan-"]').forEach(function(o){o.classList.remove('sel');});
+  document.getElementById('eplan-'+(p||'custom')).classList.add('sel');
+  document.getElementById('ec-custom-amt').style.display=p===0?'block':'none';
+  document.getElementById('ec-custom-roti-wrap').style.display=p===0?'block':'none';
+}
+function editCust(id){
+  load();
+  var c=DB.customers.find(function(x){return x.id===id;});
+  if(!c)return;
+  document.getElementById('ec-id').value=id;
+  document.getElementById('ec-name').value=c.name||'';
+  document.getElementById('ec-phone').value=c.phone||'';
+  document.getElementById('ec-addr').value=c.address||'';
+  document.getElementById('ec-zone').value=c.zone||'';
+  document.getElementById('ec-type').value=c.type||'Veg';
+  document.getElementById('ec-meal').value=c.meal||'Both';
+  // Plan
+  selEditPlan=c.plan||null;
+  document.querySelectorAll('[id^="eplan-"]').forEach(function(o){o.classList.remove('sel');});
+  if(c.plan===2500){document.getElementById('eplan-2500').classList.add('sel');document.getElementById('ec-custom-amt').style.display='none';document.getElementById('ec-custom-roti-wrap').style.display='none';}
+  else if(c.plan===2000){document.getElementById('eplan-2000').classList.add('sel');document.getElementById('ec-custom-amt').style.display='none';document.getElementById('ec-custom-roti-wrap').style.display='none';}
+  else if(c.plan===1500){document.getElementById('eplan-1500').classList.add('sel');document.getElementById('ec-custom-amt').style.display='none';document.getElementById('ec-custom-roti-wrap').style.display='none';}
+  else if(c.plan){
+    document.getElementById('eplan-custom').classList.add('sel');
+    document.getElementById('ec-custom-amt').value=c.plan;
+    document.getElementById('ec-custom-amt').style.display='block';
+    document.getElementById('ec-custom-roti-wrap').style.display='block';
+    var cr=c.roti||2;
+    setECRoti(cr);
+  }
+  else{document.getElementById('ec-custom-amt').style.display='none';document.getElementById('ec-custom-roti-wrap').style.display='none';}
+  openModal('modal-edit-customer');
+}
+function saveEditCust(){
+  var id=parseInt(document.getElementById('ec-id').value);
+  var name=document.getElementById('ec-name').value.trim();
+  var phone=document.getElementById('ec-phone').value.trim();
+  if(!name){toast('⚠️ Naam daalo!');return;}
+  if(!phone){toast('⚠️ Phone daalo!');return;}
+  var plan=selEditPlan===0?parseInt(document.getElementById('ec-custom-amt').value)||0:selEditPlan||0;
+  var roti=plan>=2500?4:plan>=2000?3:plan>=1500?2:parseInt(document.getElementById('ec-custom-roti').value)||2;
+  var meal=document.getElementById('ec-meal').value||'Both';
+  load();
+  var idx=DB.customers.findIndex(function(x){return x.id===id;});
+  if(idx<0){toast('⚠️ Customer nahi mila!');return;}
+  DB.customers[idx].name=name;
+  DB.customers[idx].phone=phone;
+  DB.customers[idx].address=document.getElementById('ec-addr').value.trim();
+  DB.customers[idx].zone=document.getElementById('ec-zone').value.trim();
+  DB.customers[idx].type=document.getElementById('ec-type').value;
+  DB.customers[idx].plan=plan;
+  DB.customers[idx].roti=roti;
+  DB.customers[idx].meal=meal;
+  save();
+  closeModal('modal-edit-customer');
+  toast('✅ '+name+' update ho gaya!');
+  renderCustList('');
+  renderDash();
+}
+
+function showDayDetail(day,m,y){
+  var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dk=y+'-'+(m+1<10?'0':'')+(m+1)+'-'+(day<10?'0':'')+day;
+  var pays=DB.payments.filter(function(p){return p.date===dk;});
+  var exps=DB.expenses.filter(function(e){return e.date===dk;});
+  var msg=day+' '+mn[m]+' '+y+'\n\n';
+  if(pays.length){
+    msg+='💰 Income:\n';
+    pays.forEach(function(p){var c=DB.customers.find(function(x){return x.id===p.custId;});msg+='  '+(c?c.name:'?')+': ₹'+p.amount+'\n';});
+  }
+  if(exps.length){
+    msg+='\n📤 Expense:\n';
+    exps.forEach(function(e){msg+='  '+e.category+': ₹'+e.amount+'\n';});
+  }
+  if(!pays.length&&!exps.length)msg+='Koi entry nahi!';
+  alert(msg);
+}
+function delExtraIncome(id){if(!DB.extraIncome)return;DB.extraIncome=DB.extraIncome.filter(function(e){return e.id!==id;});save();renderReports();}
+function quickIncome(cat){
+  var amt=parseInt(prompt('💰 '+cat+' — Kitna mila? ₹',''));
+  if(!amt||isNaN(amt)||amt<=0)return;
+  var note=prompt('📝 Note (optional):','')||'';
+  load();
+  if(!DB.extraIncome)DB.extraIncome=[];
+  DB.extraIncome.push({id:Date.now(),category:cat,amount:amt,date:today(),note:note});
+  save();
+  toast('✅ ₹'+amt+' '+cat+' income add!');
+  renderDash();
+}
+function quickExpense(cat){
+  var amt=parseInt(prompt('💸 '+cat+' - Kitna kharch? ₹',''));
+  if(!amt||isNaN(amt)||amt<=0)return;
+  load();
+  DB.expenses.push({id:Date.now(),category:cat,amount:amt,date:today(),note:''});
+  save();
+  toast('✅ ₹'+amt+' '+cat+' expense add!');
+  renderDash();
+}
+function sendChuttiReminder(meal){
+  var tod=today();
+  var chuttiCusts=DB.customers.filter(function(c){
+    return DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.isChutti;});
+  });
+  if(!chuttiCusts.length){toast('Aaj koi chutti nahi!');return;}
+  var idx=0;
+  function sendNext(){
+    if(idx>=chuttiCusts.length){toast('✅ Sab '+chuttiCusts.length+' customers ko remind kar diya!');return;}
+    var c=chuttiCusts[idx++];
+    var msg='🍱 *आसान टिफिन*\n\nनमस्कार *'+c.name+'* जी! 🙏\n\nआज तुमची *'+(meal==='Lunch'?'दुपारची जेवण':'रात्रीची जेवण')+'* सुट्टी आहे.\n\n_उद्यापासून पुन्हा टिफिन मिळेल!_ 😊\n\n— *आसान टिफिन* 🍛';
+    window.open('https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+    setTimeout(sendNext,1500);
+  }
+  sendNext();
+}
+
+function renderCusts(q){
+  load();var el=document.getElementById('page-customers'),n=new Date(),dim=new Date(n.getFullYear(),n.getMonth()+1,0).getDate(),dl=dim-n.getDate();
+  var list=DB.customers.filter(function(c){return !q||c.name.toLowerCase().indexOf(q.toLowerCase())>=0||c.phone.indexOf(q)>=0;});
+  var h='<button class="btn btn-primary btn-full" style="margin-bottom:12px" onclick="openModal(\'modal-customer\')">➕ Add Customer</button>';
+  h+='<div class="search-wrap"><input class="search-box" type="text" id="cust-search-input" placeholder="Search..." autocomplete="off" autocorrect="off" autocapitalize="off" oninput="custSearchUpdate(this.value)" value="'+(q||'')+'"></div>';
+  h+='<div id="cust-list-wrap"></div>';
+  el.innerHTML=h;
+  renderCustList(q||'');
+  // Keep focus on search if there's a query
+  if(q){var si=document.getElementById('cust-search-input');if(si){si.focus();var l=si.value.length;si.setSelectionRange(l,l);}}
+}
+
+function custSearchUpdate(q){
+  renderCustList(q);
+}
+
+function renderCustList(q){
+  load();var n=new Date(),dim=new Date(n.getFullYear(),n.getMonth()+1,0).getDate(),dl=dim-n.getDate();
+  var list=DB.customers.filter(function(c){return !q||c.name.toLowerCase().indexOf(q.toLowerCase())>=0||c.phone.indexOf(q)>=0;});
+  var h='';
+  if(!list.length){h='<div class="empty"><div class="ei">👥</div>Koi customer nahi</div>';}
+  else list.forEach(function(c){
+    var dr=c.plan?getDR(c.plan):0,lr=Math.round(dr/2),dinr=dr-lr,paid=0,deliveredAmt=0;
+    DB.payments.forEach(function(p){var pd=new Date(p.date);if(p.custId===c.id&&pd.getMonth()===n.getMonth()&&pd.getFullYear()===n.getFullYear())paid+=p.amount;});
+    DB.orders.forEach(function(o){var od=new Date(o.date);if(o.custId===c.id&&o.status==='Delivered'&&od.getMonth()===n.getMonth()&&od.getFullYear()===n.getFullYear())deliveredAmt+=o.amount;});
+    var planDue=Math.max(0,deliveredAmt-paid);
+    var chuttiDays=[];for(var k=0;k<7;k++){var cd=new Date();cd.setDate(n.getDate()+k);var cm=cd.getMonth()+1,cdy=cd.getDate(),cdk=cd.getFullYear()+'-'+(cm<10?'0':'')+cm+'-'+(cdy<10?'0':'')+cdy;if(DB.orders.some(function(o){return o.custId===c.id&&o.date===cdk&&o.isChutti;}))chuttiDays.push(cdy+'/'+(cm));}
+    h+='<div class="cust-card"><div style="display:flex;align-items:center;gap:11px;margin-bottom:10px"><div class="cust-av">'+c.name[0].toUpperCase()+'</div><div style="flex:1"><div style="font-weight:700;font-size:15px">'+c.name+'</div><div style="font-size:12px;color:var(--sb)">📞 '+c.phone+'</div>'+(c.plan?'<div style="font-size:12px;color:var(--or);font-weight:700">💳 ₹'+c.plan+'/mo</div>':'')+'</div><span class="pill '+(c.type==='Veg'?'p-green':'p-red')+'">'+c.type+'</span></div>';
+    if(c.zone)h+='<div style="font-size:12px;color:var(--pu);font-weight:700;margin-bottom:6px">🏘️ '+c.zone+'</div>';
+    if(chuttiDays.length)h+='<div style="background:#FEE2E2;border-radius:9px;padding:7px 11px;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--rd)">🏖️ Chutti: '+chuttiDays.join(', ')+'</div>';
+    if(c.plan&&dr>0){h+='<div style="background:var(--ib);border-radius:11px;padding:10px;margin-bottom:10px;border:1px solid var(--br)"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:5px"><div><div style="font-size:15px;font-weight:800;color:var(--or)">₹'+lr+'</div><div style="font-size:9px;color:var(--sb)">🌞 Lunch</div></div><div><div style="font-size:15px;font-weight:800;color:var(--bl)">₹'+dinr+'</div><div style="font-size:9px;color:var(--sb)">🌙 Dinner</div></div><div><div style="font-size:15px;font-weight:800;color:'+(planDue>0?'var(--rd)':'var(--gn)')+'">'+( planDue>0?'₹'+planDue:'✅')+'</div><div style="font-size:9px;color:var(--sb)">Due</div></div></div><div style="font-size:10px;color:var(--sb);text-align:center">Del: ₹'+deliveredAmt+' • Paid: ₹'+paid+' • '+dl+' din baaki</div></div>';}
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="orderFor('+c.id+')">➕</button><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button><button class="btn btn-secondary btn-sm" onclick="markChutti('+c.id+')">🏖️</button><a class="btn btn-blue btn-sm" href="tel:'+c.phone+'">📞</a><button class="btn btn-wa btn-sm" onclick="sendWA('+c.id+')">💬</button><button class="btn btn-wa btn-sm" onclick="sendBill('+c.id+')">🧾</button><button class="btn btn-purple btn-sm" onclick="showQR('+c.id+')">📲</button><button class="btn btn-secondary btn-sm" onclick="showHistory('+c.id+')">📅</button><button class="btn btn-secondary btn-sm" onclick="editCust('+c.id+')" style="background:#FFF3E0;color:var(--or);border:1.5px solid var(--or)">✏️</button><button class="btn btn-danger btn-sm" onclick="delCust('+c.id+')">🗑️</button></div></div>';
+  });
+  var wrap=document.getElementById('cust-list-wrap');
+  if(wrap) wrap.innerHTML=h;
+}
+
+function renderOrders(q){
+  load();var el=document.getElementById('page-orders');
+  var list=DB.orders.filter(function(o){if(o.isChutti)return false;if(!q)return true;var c=DB.customers.find(function(x){return x.id===o.custId;});return c&&c.name.toLowerCase().indexOf(q.toLowerCase())>=0;});
+  list.sort(function(a,b){return a.date<b.date?1:-1;});
+  var sc={Pending:'p-yellow',Preparing:'p-blue','On the Way':'p-orange',Delivered:'p-green',Cancelled:'p-red'};
+  var h='<div class="search-wrap"><input class="search-box" type="text" placeholder="Search..." oninput="renderOrders(this.value)" value="'+(q||'')+'"></div>';
+  if(!list.length){h+='<div class="empty"><div class="ei">📦</div>Koi order nahi</div>';}
+  else list.forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;});h+='<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><div><div style="font-weight:700;font-size:14px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+fmt(o.date)+' • '+(o.meal||'')+' • ₹'+o.amount+'</div></div><span class="pill '+(sc[o.status]||'p-yellow')+'">'+o.status+'</span></div><div style="display:flex;gap:6px;flex-wrap:wrap">'+(o.status==='Pending'?'<button class="btn btn-blue btn-sm" onclick="updateStatus('+o.id+',\'Preparing\')">👨‍🍳</button>':'')+(o.status==='Preparing'?'<button class="btn btn-primary btn-sm" onclick="updateStatus('+o.id+',\'On the Way\')">🛵</button>':'')+(o.status==='On the Way'?'<button class="btn btn-success btn-sm" onclick="updateStatus('+o.id+',\'Delivered\')">✅</button>':'')+(o.status!=='Delivered'&&o.status!=='Cancelled'?'<button class="btn btn-danger btn-sm" onclick="updateStatus('+o.id+',\'Cancelled\')">❌</button>':'')+'<button class="btn btn-danger btn-sm" onclick="delOrder('+o.id+')">🗑️</button></div></div>';});
+  el.innerHTML=h;
+}
+
+function getSmartMeal(){var h=new Date().getHours();if(h>=5&&h<12)return'Lunch';if(h>=12&&h<17)return'Lunch';return'Dinner';}
+
+function smartBulkOrder(){
+  load();
+  var meal=getSmartMeal();
+  var tod=today();
+  var count=0;
+  var skipped=0;
+  DB.customers.forEach(function(c){
+    // Skip if order already exists for today+meal
+    var exists=DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.meal===meal&&!o.isChutti;});
+    if(exists){skipped++;return;}
+    var dr=getDR(c.plan||0);
+    var lr=Math.round(dr/2);
+    var amt=meal==='Lunch'?lr:dr-lr;
+    DB.orders.push({id:Date.now()+count,custId:c.id,type:c.type||'Veg',meal:meal,qty:1,amount:amt,date:tod,note:'',status:'Preparing'});
+    count++;
+  });
+  save();
+  toast('✅ '+count+' '+meal+' orders ready!'+(skipped?' ('+skipped+' already tha)':''));
+  renderKitchen();renderDash();
+}
+
+function renderKitchen(){
+  load();var tod=today(),todOrds=DB.orders.filter(function(o){return o.date===tod&&!o.isChutti;});
+  var smartMeal=getSmartMeal();
+  var lunchOrds=todOrds.filter(function(o){return o.meal==='Lunch';});
+  var dinnerOrds=todOrds.filter(function(o){return o.meal==='Dinner';});
+  var p=0,pr=0,ow=0,d=0,cn=0;
+  todOrds.forEach(function(o){if(o.status==='Pending')p++;else if(o.status==='Preparing')pr++;else if(o.status==='On the Way')ow++;else if(o.status==='Delivered')d++;else cn++;});
+  var sc={Pending:'p-yellow',Preparing:'p-blue','On the Way':'p-orange',Delivered:'p-green',Cancelled:'p-red'};
+  var h='<div class="banner"><div class="banner-title">👨‍🍳 Kitchen</div><div class="banner-sub">Aaj ka status</div></div>';
+  h+=renderCarryOver();
+
+  // Ladies Class roti count
+  var cd=getTodayClass();
+  if(cd.count){
+    h+='<div class="card" style="border:2px solid var(--pu);margin-bottom:12px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between">';
+    h+='<div><div class="card-title" style="margin-bottom:0">👩 Ladies Class</div><div style="font-size:12px;color:var(--sb);margin-top:4px">'+cd.count+' ladies × '+cd.rotiEach+' roti</div></div>';
+    h+='<div style="text-align:right"><div style="font-size:32px;font-weight:800;color:var(--pu)">'+cd.total+'</div><div style="font-size:11px;color:var(--sb)">Total Roti 🫓</div></div>';
+    h+='</div></div>';
+  }
+
+  // Smart 1-click bulk buttons
+  h+='<div class="card" style="border:2px solid var(--or)">';
+  h+='<div class="card-title">⚡ 1 Click — Aaj ke Orders</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  var lunchDone=lunchOrds.length>0;
+  var dinnerDone=dinnerOrds.length>0;
+  h+='<button onclick="oneBulk(\'Lunch\')" style="padding:16px;border:none;border-radius:14px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:800;font-size:14px;'+(smartMeal==='Lunch'?'background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;box-shadow:0 4px 15px rgba(255,107,0,.4)':'background:var(--ib);color:var(--tx);border:2px solid var(--br)')+'">🌞 Lunch<br><span style="font-size:10px;font-weight:600;opacity:.8">'+(lunchDone?lunchOrds.length+' orders hai':'Koi order nahi')+'</span></button>';
+  h+='<button onclick="oneBulk(\'Dinner\')" style="padding:16px;border:none;border-radius:14px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:800;font-size:14px;'+(smartMeal==='Dinner'?'background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff;box-shadow:0 4px 15px rgba(142,68,173,.4)':'background:var(--ib);color:var(--tx);border:2px solid var(--br)')+'">🌙 Dinner<br><span style="font-size:10px;font-weight:600;opacity:.8">'+(dinnerDone?dinnerOrds.length+' orders hai':'Koi order nahi')+'</span></button>';
+  h+='</div>';
+  h+='<div style="margin-top:10px;text-align:center;font-size:11px;color:var(--sb)">👆 Button dabao — sab customers ke orders ek baar mein add honge!</div>';
+  h+='</div>';
+
+  h+='<div class="card"><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center">';
+  [{ic:'📋',v:p,c:'var(--gd)',lb:'Pending'},{ic:'👨‍🍳',v:pr,c:'var(--bl)',lb:'Prep'},{ic:'🛵',v:ow,c:'var(--or)',lb:'Way'},{ic:'✅',v:d,c:'var(--gn)',lb:'Done'},{ic:'❌',v:cn,c:'var(--rd)',lb:'Cancel'}].forEach(function(x){h+='<div><div style="font-size:20px">'+x.ic+'</div><div style="font-size:20px;font-weight:800;color:'+x.c+'">'+x.v+'</div><div style="font-size:9px;color:var(--sb)">'+x.lb+'</div></div>';});
+  h+='</div></div>';
+
+  // Lunch orders section
+  if(lunchOrds.length){
+    h+='<div class="card"><div class="sec-header"><div class="sec-title">🌞 Lunch Orders ('+lunchOrds.length+')</div></div>';
+    lunchOrds.forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;});h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+o.type+(c&&c.zone?' • '+c.zone:'')+'</div></div><div style="display:flex;gap:5px;align-items:center"><span class="pill '+(sc[o.status]||'p-yellow')+'">'+o.status+'</span>'+(o.status==='Pending'?'<button class="btn btn-blue btn-sm" onclick="updateStatus('+o.id+',\'Preparing\')">👨‍🍳</button>':'')+(o.status==='Preparing'?'<button class="btn btn-primary btn-sm" onclick="updateStatus('+o.id+',\'On the Way\')">🛵</button>':'')+(o.status==='On the Way'?'<button class="btn btn-success btn-sm" onclick="updateStatus('+o.id+',\'Delivered\')">✅</button>':'')+(o.status!=='Delivered'&&o.status!=='Cancelled'?'<button class="btn btn-danger btn-sm" onclick="updateStatus('+o.id+',\'Cancelled\')">❌</button>':'')+'</div></div>';});
+    h+='</div>';
+  }
+
+  // Dinner orders section
+  if(dinnerOrds.length){
+    h+='<div class="card"><div class="sec-header"><div class="sec-title">🌙 Dinner Orders ('+dinnerOrds.length+')</div></div>';
+    dinnerOrds.forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;});h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+o.type+(c&&c.zone?' • '+c.zone:'')+'</div></div><div style="display:flex;gap:5px;align-items:center"><span class="pill '+(sc[o.status]||'p-yellow')+'">'+o.status+'</span>'+(o.status==='Pending'?'<button class="btn btn-blue btn-sm" onclick="updateStatus('+o.id+',\'Preparing\')">👨‍🍳</button>':'')+(o.status==='Preparing'?'<button class="btn btn-primary btn-sm" onclick="updateStatus('+o.id+',\'On the Way\')">🛵</button>':'')+(o.status==='On the Way'?'<button class="btn btn-success btn-sm" onclick="updateStatus('+o.id+',\'Delivered\')">✅</button>':'')+(o.status!=='Delivered'&&o.status!=='Cancelled'?'<button class="btn btn-danger btn-sm" onclick="updateStatus('+o.id+',\'Cancelled\')">❌</button>':'')+'</div></div>';});
+    h+='</div>';
+  }
+
+  if(!todOrds.length)h+='<div class="empty"><div class="ei">👨‍🍳</div>Koi order nahi — upar button dabao!</div>';
+  document.getElementById('page-kitchen').innerHTML=h;
+}
+
+function oneBulk(meal){
+  load();
+  var tod=today();
+  var count=0,skipped=0;
+  DB.customers.forEach(function(c){
+    var exists=DB.orders.some(function(o){return o.custId===c.id&&o.date===tod&&o.meal===meal&&!o.isChutti;});
+    if(exists){skipped++;return;}
+    var dr=getDR(c.plan||0);
+    var lr=Math.round(dr/2);
+    var amt=meal==='Lunch'?lr:dr-lr;
+    DB.orders.push({id:Date.now()+count,custId:c.id,type:c.type||'Veg',meal:meal,qty:1,amount:amt,date:tod,note:'',status:'Preparing'});
+    count++;
+  });
+  save();
+  if(count===0){toast('⚠️ Sab '+meal+' orders pehle se hain!');}
+  else{toast('✅ '+count+' '+meal+' orders ready!'+(skipped?' ('+skipped+' already the)':''));}
+  renderKitchen();renderDash();
+}
+
+// ===== MONTHLY SUMMARY =====
+function renderSummary(){
+  load();var n=new Date(),m=n.getMonth(),y=n.getFullYear();
+  var mn=n.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  var totalInc=0,totalExp=0,totalOrds=0,totalDel=0,totalChutti=0;
+  DB.payments.forEach(function(p){var d=new Date(p.date);if(d.getMonth()===m&&d.getFullYear()===y)totalInc+=p.amount;});
+  DB.expenses.forEach(function(e){var d=new Date(e.date);if(d.getMonth()===m&&d.getFullYear()===y)totalExp+=e.amount;});
+  DB.orders.forEach(function(o){var d=new Date(o.date);if(d.getMonth()===m&&d.getFullYear()===y){if(!o.isChutti)totalOrds++;if(o.status==='Delivered')totalDel++;if(o.isChutti)totalChutti++;}});
+  var profit=totalInc-totalExp;
+  var dim=new Date(y,m+1,0).getDate();
+  var daysPassed=n.getDate();
+  var dailyAvg=daysPassed>0?Math.round(totalInc/daysPassed):0;
+  var projected=dailyAvg*dim;
+
+  var h='<div class="summary-hero">';
+  h+='<div style="font-size:12px;opacity:.6;font-weight:600;margin-bottom:4px">📅 '+mn+'</div>';
+  h+='<div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px">Total Income</div>';
+  h+='<div class="summary-amount">₹'+totalInc+'</div>';
+  h+='<div style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.6);margin-bottom:4px"><span>Month progress</span><span>'+daysPassed+'/'+dim+' din</span></div><div class="progress-bar"><div class="progress-fill" style="width:'+Math.round((daysPassed/dim)*100)+'%"></div></div></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">';
+  h+='<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:800;color:#4ADE80">₹'+profit+'</div><div style="font-size:9px;opacity:.7">Profit</div></div>';
+  h+='<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:800;color:#FCD34D">₹'+dailyAvg+'</div><div style="font-size:9px;opacity:.7">Daily Avg</div></div>';
+  h+='<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:800;color:#60A5FA">₹'+projected+'</div><div style="font-size:9px;opacity:.7">Projected</div></div>';
+  h+='</div></div>';
+
+  // Order stats
+  h+='<div class="card"><div class="card-title">📦 Order Stats</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">';
+  h+='<div style="background:var(--ib);border-radius:12px;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--bl)">'+totalOrds+'</div><div style="font-size:10px;color:var(--sb)">Total Orders</div></div>';
+  h+='<div style="background:var(--ib);border-radius:12px;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--gn)">'+totalDel+'</div><div style="font-size:10px;color:var(--sb)">Delivered</div></div>';
+  h+='<div style="background:var(--ib);border-radius:12px;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--rd)">'+totalChutti+'</div><div style="font-size:10px;color:var(--sb)">Chutti</div></div>';
+  h+='</div></div>';
+
+  // Top customers by amount
+  var custData=[];
+  DB.customers.forEach(function(c){var amt=0;DB.orders.forEach(function(o){var d=new Date(o.date);if(o.custId===c.id&&o.status==='Delivered'&&d.getMonth()===m&&d.getFullYear()===y)amt+=o.amount;});if(amt>0)custData.push({name:c.name,amt:amt,due:due(c.id)});});
+  custData.sort(function(a,b){return b.amt-a.amt;});
+  if(custData.length){
+    h+='<div class="card"><div class="card-title">🏆 Top Customers</div>';
+    var medals=['🥇','🥈','🥉'];
+    custData.slice(0,5).forEach(function(c,i){h+='<div class="top-cust-card"><div class="rank-badge" style="background:'+(i<3?'#FEF3C7':'var(--ib)')+'">'+( medals[i]||'#'+(i+1))+'</div><div style="flex:1"><div style="font-weight:700;font-size:13px">'+c.name+'</div><div style="font-size:11px;color:var(--sb)">₹'+c.amt+' this month</div></div>'+(c.due>0?'<span class="pill p-red">Due ₹'+c.due+'</span>':'<span class="pill p-green">Clear ✅</span>')+'</div>';});
+    h+='</div>';
+  }
+
+  // Category breakdown
+  var catMap={};
+  DB.expenses.forEach(function(e){var d=new Date(e.date);if(d.getMonth()===m&&d.getFullYear()===y){if(!catMap[e.category])catMap[e.category]=0;catMap[e.category]+=e.amount;}});
+  var cats=Object.keys(catMap);
+  if(cats.length){
+    h+='<div class="card"><div class="card-title">📤 Expense Breakdown</div>';
+    cats.sort(function(a,b){return catMap[b]-catMap[a];}).forEach(function(cat){var pct=totalExp>0?Math.round((catMap[cat]/totalExp)*100):0;h+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600">'+cat+'</span><span style="font-size:12px;font-weight:700;color:var(--rd)">₹'+catMap[cat]+' ('+pct+'%)</span></div><div style="height:6px;background:var(--br);border-radius:10px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--rd),#E74C3C);border-radius:10px"></div></div></div>';});
+    h+='</div>';
+  }
+
+  // Payment mode breakdown
+  var modeMap={};
+  DB.payments.forEach(function(p){var d=new Date(p.date);if(d.getMonth()===m&&d.getFullYear()===y){if(!modeMap[p.mode])modeMap[p.mode]=0;modeMap[p.mode]+=p.amount;}});
+  if(Object.keys(modeMap).length){
+    h+='<div class="card"><div class="card-title">💳 Payment Modes</div><div style="display:flex;gap:8px;flex-wrap:wrap">';
+    var modeIc={Cash:'💵',UPI:'📱',Online:'🌐'};
+    Object.keys(modeMap).forEach(function(mode){h+='<div style="flex:1;min-width:80px;background:var(--ib);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--br)"><div style="font-size:20px">'+(modeIc[mode]||'💰')+'</div><div style="font-size:14px;font-weight:800;color:var(--gn);margin-top:4px">₹'+modeMap[mode]+'</div><div style="font-size:10px;color:var(--sb)">'+mode+'</div></div>';});
+    h+='</div></div>';
+  }
+
+  document.getElementById('page-summary').innerHTML=h;
+}
+
+function renderReports(mo,yr){
+  load();
+  var n=new Date();
+  var m=mo!==undefined?mo:n.getMonth();
+  var y=yr!==undefined?yr:n.getFullYear();
+  // Prev/Next month
+  var pm=m-1,py=y;if(pm<0){pm=11;py--;}
+  var nm=m+1,ny=y;if(nm>11){nm=0;ny++;}
+  var inc=0,exp=0;
+  DB.payments.forEach(function(p){var d=new Date(p.date);if(d.getMonth()===m&&d.getFullYear()===y)inc+=p.amount;});
+  if(!DB.extraIncome)DB.extraIncome=[];
+  DB.extraIncome.forEach(function(e){var d=new Date(e.date);if(d.getMonth()===m&&d.getFullYear()===y)inc+=e.amount;});
+  DB.expenses.forEach(function(e){var d=new Date(e.date);if(d.getMonth()===m&&d.getFullYear()===y)exp+=e.amount;});
+  var profit=inc-exp;
+  var mn=new Date(y,m,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  var h='<div class="banner"><div class="banner-title">💰 Reports</div><div class="banner-sub">'+mn+'</div></div>';
+  // Month selector
+  h+='<div style="display:flex;align-items:center;justify-content:space-between;background:var(--cd);border-radius:14px;padding:12px 16px;margin-bottom:14px;border:1px solid var(--br)">';
+  h+='<button onclick="renderReports('+pm+','+py+')" style="border:none;background:var(--ib);border-radius:10px;padding:8px 16px;font-weight:800;font-size:18px;cursor:pointer;color:var(--tx)">◀</button>';
+  h+='<div style="font-weight:800;font-size:15px;color:var(--or)">'+mn+'</div>';
+  var isCurrentMonth=(m===n.getMonth()&&y===n.getFullYear());
+  h+='<button onclick="renderReports('+nm+','+ny+')" style="border:none;background:var(--ib);border-radius:10px;padding:8px 16px;font-weight:800;font-size:18px;cursor:pointer;color:'+(isCurrentMonth?'var(--sb)':'var(--tx)')+'">▶</button>';
+  h+='</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px"><div class="stat-card"><div class="stat-ic">💰</div><div class="stat-val" style="font-size:18px;color:var(--gn)">₹'+inc+'</div><div class="stat-lbl">Income</div></div><div class="stat-card"><div class="stat-ic">📤</div><div class="stat-val" style="font-size:18px;color:var(--rd)">₹'+exp+'</div><div class="stat-lbl">Expense</div></div><div class="stat-card"><div class="stat-ic">📈</div><div class="stat-val" style="font-size:18px;color:'+(profit>=0?'var(--gn)':'var(--rd)')+'">₹'+profit+'</div><div class="stat-lbl">Profit</div></div></div>';
+  // Calendar view
+  var dim=new Date(y,m+1,0).getDate();
+  var firstDay=new Date(y,m,1).getDay(); // 0=Sun
+  // Adjust for Mon start
+  var startOffset=(firstDay===0)?6:firstDay-1;
+  
+  // Build income/expense map for the month
+  var dayMap={};
+  DB.payments.forEach(function(p){
+    var d=new Date(p.date);
+    if(d.getMonth()===m&&d.getFullYear()===y){
+      var day=d.getDate();
+      if(!dayMap[day])dayMap[day]={inc:0,exp:0};
+      dayMap[day].inc+=p.amount;
+    }
+  });
+  DB.expenses.forEach(function(e){
+    var d=new Date(e.date);
+    if(d.getMonth()===m&&d.getFullYear()===y){
+      var day=d.getDate();
+      if(!dayMap[day])dayMap[day]={inc:0,exp:0};
+      dayMap[day].exp+=e.amount;
+    }
+  });
+
+  h+='<div class="card"><div class="card-title">📅 '+mn+' — Calendar</div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px">';
+  var days=['Mo','Tu','We','Th','Fr','Sa','Su'];
+  days.forEach(function(d){h+='<div style="text-align:center;font-size:10px;font-weight:700;color:var(--sb);padding:3px">'+d+'</div>';});
+  
+  // Empty cells before first day
+  for(var i=0;i<startOffset;i++){
+    h+='<div></div>';
+  }
+  
+  var todayDate=new Date().getDate(),todayM=new Date().getMonth(),todayY=new Date().getFullYear();
+  
+  for(var day=1;day<=dim;day++){
+    var data=dayMap[day]||{inc:0,exp:0};
+    var isToday=(day===todayDate&&m===todayM&&y===todayY);
+    var bg=data.inc>0&&data.exp>0?'linear-gradient(135deg,#DCFCE7,#FEE2E2)':data.inc>0?'#DCFCE7':data.exp>0?'#FEE2E2':'var(--ib)';
+    var border=isToday?'2px solid var(--or)':'1px solid var(--br)';
+    h+='<div style="border-radius:8px;padding:4px 2px;text-align:center;background:'+bg+';border:'+border+';cursor:pointer" onclick="showDayDetail('+day+','+m+','+y+')">';
+    h+='<div style="font-size:11px;font-weight:'+(isToday?'900':'600')+';color:'+(isToday?'var(--or)':'var(--tx)')+'">'+day+'</div>';
+    if(data.inc>0)h+='<div style="font-size:7px;color:var(--gn);font-weight:700">+'+data.inc+'</div>';
+    if(data.exp>0)h+='<div style="font-size:7px;color:var(--rd);font-weight:700">-'+data.exp+'</div>';
+    h+='</div>';
+  }
+  h+='</div>';
+  h+='<div style="display:flex;gap:12px;justify-content:center;font-size:11px;color:var(--sb)">';
+  h+='<span><span style="display:inline-block;width:10px;height:10px;background:#DCFCE7;border:1px solid var(--gn);border-radius:2px;margin-right:4px"></span>Income</span>';
+  h+='<span><span style="display:inline-block;width:10px;height:10px;background:#FEE2E2;border:1px solid var(--rd);border-radius:2px;margin-right:4px"></span>Expense</span>';
+  h+='<span><span style="display:inline-block;width:10px;height:10px;border:2px solid var(--or);border-radius:2px;margin-right:4px"></span>Aaj</span>';
+  h+='</div></div>';
+  var dc=DB.customers.filter(function(c){return due(c.id)>0;});
+  if(dc.length){h+='<div class="card"><div class="card-title">🔔 Due Customers</div>';dc.forEach(function(c){var d2=due(c.id);h+='<div class="order-row"><div><div style="font-weight:700;font-size:13px">'+c.name+'</div><div style="font-size:11px;color:var(--sb)">'+c.phone+'</div></div><div style="display:flex;align-items:center;gap:7px"><div style="font-weight:800;color:var(--rd)">₹'+d2+'</div><button class="btn btn-success btn-sm" onclick="payFor('+c.id+')">💵</button></div></div>';});h+='</div>';}
+
+  // Payment received list this month
+  var mPays=DB.payments.filter(function(p){var d=new Date(p.date);return d.getMonth()===m&&d.getFullYear()===y;}).slice().reverse();
+  h+='<div class="card"><div class="card-title">✅ Kisne Payment Diya — '+mn+'</div>';
+  if(!mPays.length){h+='<div class="empty" style="padding:20px"><div class="ei" style="font-size:32px">💰</div>Abhi koi payment nahi</div>';}
+  else{mPays.forEach(function(p){var c=DB.customers.find(function(x){return x.id===p.custId;});h+='<div class="order-row"><div><div style="font-weight:700;font-size:13px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+fmt(p.date)+' • '+(p.mode||'Cash')+'</div></div><div style="font-weight:800;color:var(--gn)">₹'+p.amount+'</div></div>';});}
+  h+='</div>';
+  // Extra income list
+  var mExtra=(DB.extraIncome||[]).filter(function(e){var d=new Date(e.date);return d.getMonth()===m&&d.getFullYear()===y;}).slice().reverse();
+  if(mExtra.length){
+    h+='<div class="card"><div class="card-title">💰 Extra Income — '+mn+'</div>';
+    mExtra.forEach(function(e){h+='<div class="order-row"><div><div style="font-weight:700;font-size:13px">'+e.category+'</div><div style="font-size:11px;color:var(--sb)">'+fmt(e.date)+(e.note?' • '+e.note:'')+'</div></div><div style="display:flex;align-items:center;gap:7px"><div style="font-weight:800;color:var(--gn)">₹'+e.amount+'</div><button class="btn btn-danger btn-sm" onclick="delExtraIncome('+e.id+')">🗑️</button></div></div>';});
+    h+='</div>';
+  }
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><button class="btn btn-primary btn-full" onclick="openModal(\'modal-expense\')">➕ Expense</button><button class="btn btn-secondary btn-full" onclick="openModal(\'modal-backup\')">💾 Backup</button></div>';
+  h+='<div class="card" style="border:2px solid var(--rd);margin-bottom:12px"><div class="card-title" style="color:var(--rd)">⚠️ Danger Zone</div>';
+  h+='<button onclick="clearAllOrders()" style="width:100%;padding:13px;background:var(--rd);color:#fff;border:none;border-radius:12px;font-family:Poppins,sans-serif;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px">🗑️ Saare Orders Clear Karo</button>';
+  h+='<div style="font-size:11px;color:var(--sb);text-align:center">⚠️ Saare purane orders delete ho jayenge — customers safe rahenge!</div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-title">📋 Expenses</div>';
+  var exps=DB.expenses.filter(function(e){var d=new Date(e.date);return d.getMonth()===m&&d.getFullYear()===y;});
+  if(!exps.length)h+='<div class="empty" style="padding:20px"><div class="ei" style="font-size:32px">📤</div>Koi expense nahi</div>';
+  else exps.slice().reverse().forEach(function(e){h+='<div class="order-row"><div><div style="font-weight:600;font-size:13px">'+e.category+'</div><div style="font-size:11px;color:var(--sb)">'+fmt(e.date)+(e.note?' • '+e.note:'')+'</div></div><div style="display:flex;align-items:center;gap:7px"><div style="font-weight:700;color:var(--rd)">₹'+e.amount+'</div><button class="btn btn-danger btn-sm" onclick="delExp('+e.id+')">🗑️</button></div></div>';});
+  h+='</div>';
+  document.getElementById('page-reports').innerHTML=h;
+}
+
+// ===== DELIVERY APP =====
+function dTab(t){dActiveTab=t;document.querySelectorAll('.d-tab').forEach(function(x){x.classList.remove('active');});document.getElementById('dt-'+t).classList.add('active');document.getElementById('d-page-orders').style.display=t==='orders'?'block':'none';document.getElementById('d-page-collection').style.display=t==='collection'?'block':'none';}
+
+function dLoadOrders(){
+  load();var tod=today();
+  var todOrds=DB.orders.filter(function(o){return o.date===tod&&!o.isChutti;});
+  var delivered=todOrds.filter(function(o){return o.status==='Delivered';});
+  var pending=todOrds.filter(function(o){return o.status!=='Delivered'&&o.status!=='Cancelled';});
+  document.getElementById('d-total').textContent=todOrds.length;
+  document.getElementById('d-done').textContent=delivered.length;
+  document.getElementById('d-baaki').textContent=pending.length;
+  pending.sort(function(a,b){var ca=DB.customers.find(function(x){return x.id===a.custId;}),cb=DB.customers.find(function(x){return x.id===b.custId;});return ((ca&&ca.zone)||'zzz').localeCompare((cb&&cb.zone)||'zzz');});
+  var curZone='',h='';
+  if(!pending.length)h='<div class="empty"><div class="ei">🎉</div>Sab deliver ho gaya!</div>';
+  var STEPS=['Order','Tayyar','Raste mein','Pahuncha'];
+  var stepIdx={'Pending':0,'Preparing':1,'On the Way':2,'Delivered':3};
+  pending.forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;}),zone=c&&c.zone?c.zone:'';
+    if(zone&&zone!==curZone){curZone=zone;h+='<div style="background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff;border-radius:10px;padding:8px 12px;margin:8px 0 6px;font-size:12px;font-weight:800">🏘️ '+zone+'</div>';}
+    var si=stepIdx[o.status]||0;
+    var stepsHtml='<div class="tracker">';
+    STEPS.forEach(function(s,i){
+      var cls=i<si?'done':(i===si?'current':'');
+      var lineColor=i<si?'var(--gn)':'#EEE';
+      var lineHtml=i<STEPS.length-1?'<div style="position:absolute;top:17px;left:60%;right:-40%;height:3px;background:'+lineColor+';z-index:0"></div>':'';
+      var checkTxt=i<si?'✓':String(i+1);
+      stepsHtml+='<div class="t-step '+cls+'">'+lineHtml+'<div class="t-circle">'+checkTxt+'</div><div class="t-label">'+s+'</div></div>';
+    });
+    stepsHtml+='</div>';
+    // Marathi WA message
+    var maMsg='';
+    if(o.status==='Pending')maMsg='🍱 *आसान टिफिन*\n\nनमस्कार *'+(c?c.name:'')+'* जी! 🙏\n\nतुमचा ऑर्डर मिळाला!\nलवकरच पोहोचवतो! 😊\n\n— आसान टिफिन';
+    else if(o.status==='Preparing')maMsg='🍱 *आसान टिफिन*\n\nनमस्कार *'+(c?c.name:'')+'* जी! 🙏\n\n👨‍🍳 तुमचे जेवण तयार होत आहे!\nथोड्या वेळात पाठवतो! 😊\n\n— आसान टिफिन';
+    else if(o.status==='On the Way')maMsg='🍱 *आसान टिफिन*\n\nनमस्कार *'+(c?c.name:'')+'* जी! 🙏\n\n🛵 तुमचे टिफिन रस्त्यात आहे!\nलवकरच पोहोचेल! 😊\n\n— आसान टिफिन';
+    h+='<div style="background:var(--cd);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px var(--sh);border-left:4px solid var(--or)">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><div style="font-weight:700;font-size:15px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+(o.meal||'')+' • '+o.type+' • ₹'+o.amount+'</div></div><span class="pill p-yellow">'+o.status+'</span></div>';
+    if(c&&c.address)h+='<div style="font-size:12px;color:var(--sb);margin-bottom:8px">📍 '+c.address+'</div>';
+    h+=stepsHtml;
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 8px">';
+    if(o.status!=='Delivered'&&o.status!=='On the Way')h+='<button style="padding:12px;background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;border:none;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer" onclick="dUpdateStatus('+o.id+',\'On the Way\')">🛵 Niklo!</button>';
+    else h+='<div></div>';
+    h+='<button style="padding:12px;background:linear-gradient(135deg,var(--gn),#2ECC71);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer" onclick="dUpdateStatus('+o.id+',\'Delivered\')">✅ Pahuncha!</button>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:6px">';
+    if(c&&c.phone)h+='<a class="btn btn-blue btn-sm" href="tel:'+c.phone+'">📞</a>';
+    if(c&&c.address)h+='<a class="btn btn-sm" style="background:#EEF2FF;color:#4285F4;text-decoration:none" href="https://maps.google.com/?q='+encodeURIComponent(c.address)+'" target="_blank">🗺️</a>';
+    if(c&&c.phone&&maMsg)h+='<a class="btn btn-wa btn-sm" href="https://wa.me/91'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(maMsg)+'" target="_blank">💬 WA</a>';
+    h+='<button class="btn btn-success btn-sm" onclick="dCollectPayment('+o.custId+','+o.amount+')">💵</button>';
+    h+='</div></div>';
+  });
+  document.getElementById('d-page-orders').innerHTML=h;
+  // Collection tab
+  var ch='';
+  if(!delivered.length)ch='<div class="empty"><div class="ei">📦</div>Abhi koi deliver nahi hua</div>';
+  delivered.forEach(function(o){var c=DB.customers.find(function(x){return x.id===o.custId;});ch+='<div style="background:var(--cd);border-radius:14px;padding:13px;margin-bottom:10px;box-shadow:0 2px 10px var(--sh);border-left:4px solid '+(o.tiffinCollected?'var(--gn)':'var(--pu)')+'"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><div style="font-weight:700;font-size:15px">'+(c?c.name:'?')+'</div><div style="font-size:11px;color:var(--sb)">'+(o.meal||'')+' • ✅ '+(o.deliveredTime||'')+'</div></div><span class="pill '+(o.tiffinCollected?'p-green':'p-yellow')+'">'+(o.tiffinCollected?'✅ Liya':'⏳ Baaki')+'</span></div>'+(o.tiffinCollected?'<div style="background:#DCFCE7;border-radius:8px;padding:8px;text-align:center;font-size:12px;font-weight:700;color:var(--gn)">📦 Collected '+(o.collectedTime||'')+'</div>':'<button style="width:100%;padding:11px;background:linear-gradient(135deg,var(--pu),#9B59B6);color:#fff;border:none;border-radius:11px;font-weight:800;font-size:13px;cursor:pointer" onclick="dCollect('+o.id+')">📦 Tiffin Wapas Liya!</button>')+'</div>';});
+  document.getElementById('d-page-collection').innerHTML=ch;
+}
+
+function dUpdateStatus(id,status){
+  for(var i=0;i<DB.orders.length;i++){
+    if(DB.orders[i].id===id){
+      DB.orders[i].status=status;
+      if(status==='Delivered'){
+        DB.orders[i].deliveredTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        DB.orders[i].tiffinCollected=false;
+        var o=DB.orders[i];
+        var c=DB.customers.find(function(x){return x.id===o.custId;});
+        if(c&&c.phone){
+          var meal=o.meal==='Lunch'?'दुपारचे जेवण':'रात्रीचे जेवण';
+          var msg='🍱 *आसान टिफिन*\n\nनमस्कार *'+c.name+'* जी! 🙏\n\n✅ तुमचे *'+meal+'* टिफिन पोहोचले!\n\n_जेवणाचा आनंद घ्या!_ 😊\n\n— *आसान टिफिन* 🍛';
+          setTimeout(function(ph,m2){
+            window.open('https://wa.me/91'+ph+'?text='+encodeURIComponent(m2),'_blank');
+          }.bind(null,c.phone.replace(/\D/g,''),msg),400);
+        }
+      }
+      break;
+    }
+  }
+  save();toast(status==='Delivered'?'✅ Delivered!':'🛵 On the way!');dLoadOrders();
+}
+function dCollectPayment(custId,suggestedAmt){
+  var c=DB.customers.find(function(x){return x.id===custId;});
+  if(!c)return;
+  var amt=parseInt(prompt('💵 '+c.name+' se kitna mila? ₹',suggestedAmt||''));
+  if(!amt||isNaN(amt)||amt<=0)return;
+  load();
+  DB.payments.push({id:Date.now(),custId:custId,amount:amt,mode:'Cash',date:today(),note:'Delivery boy ne collect kiya'});
+  save();
+  toast('✅ ₹'+amt+' '+c.name+' se collect!');
+  dLoadOrders();
+}
+function dCollect(id){for(var i=0;i<DB.orders.length;i++){if(DB.orders[i].id===id){DB.orders[i].tiffinCollected=true;DB.orders[i].collectedTime=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});break;}}save();toast('📦 Collected!');dLoadOrders();}
+
+// ===== IMPORT FROM TIFFINCHEF =====
+function importFromTiffinChef(input){
+  var file=input.files[0];
+  if(!file){return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      // TiffinChef backup format: {customers:[...], ...}
+      var tiffCustomers=data.customers||[];
+      if(!tiffCustomers.length){toast('⚠️ Koi customer nahi mila!');return;}
+      load();
+      var added=0,skipped=0;
+      tiffCustomers.forEach(function(tc){
+        // Check duplicate by name+phone
+        var exists=DB.customers.find(function(c){
+          return c.name.trim().toLowerCase()===tc.name.trim().toLowerCase();
+        });
+        if(exists){skipped++;return;}
+        // Map TiffinChef plan to Asan Tiffin amount
+        var planAmt=2000;
+        if(tc.plan==='full')planAmt=2500;
+        else if(tc.plan==='half1'||tc.plan==='half2')planAmt=1500;
+        else if(tc.plan==='manual')planAmt=0;
+        // Map food type
+        var foodType=tc.food==='nonveg'?'Non-Veg':'Veg';
+        var newId=Date.now()+Math.floor(Math.random()*1000)+added;
+        var newCust={
+          id:newId,
+          name:tc.name||'',
+          phone:tc.phone||'',
+          address:tc.address||'',
+          zone:tc.zone||'',
+          type:foodType,
+          plan:planAmt,
+          startDate:tc.startDate||today(),
+          active:true
+        };
+        DB.customers.push(newCust);
+        added++;
+      });
+      save();
+      closeModal('modal-backup');
+      input.value='';
+      toast('✅ '+added+' customers import hue!'+(skipped?' ('+skipped+' skip - already exist)':''));
+      // Refresh current page if on customers
+      if(document.getElementById('page-customers').classList.contains('active')){
+        renderCustomers('');
+      }
+    }catch(err){
+      toast('❌ File sahi nahi hai! TiffinChef backup JSON chahiye.');
+      input.value='';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearAllOrders(){
+  if(!confirm('⚠️ Saare orders delete honge!\n\nCustomers, payments aur expenses safe rahenge.\n\nPakka karna hai?')) return;
+  if(!confirm('🔴 Last chance! Ek baar delete hone ke baad wapas nahi aayenge!\n\nHaan karo toh OK dabao.')) return;
+  load();
+  DB.orders=[];
+  save();
+  toast('✅ Saare orders clear! Fresh start! 🎉',3000);
+  renderReports();
+  renderDash();
+}
+
+
+function renderCarryOver(){
+  load();
+  var tod=today();
+  var uncollected=DB.orders.filter(function(o){
+    return o.date<tod && o.status==='Delivered' && !o.tiffinCollected && !o.isChutti;
+  });
+  if(!uncollected.length) return '';
+  var h='<div style="background:linear-gradient(135deg,#FF6B00,#FFA500);border-radius:14px;padding:13px 15px;margin-bottom:12px;cursor:pointer" onclick="toggleCarryList()">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center">';
+  h+='<div><div style="color:#fff;font-weight:800;font-size:14px">⚠️ '+uncollected.length+' Tiffin Wapas Nahi Liye!</div>';
+  h+='<div style="color:rgba(255,255,255,.8);font-size:11px;margin-top:2px">Pichle dino ke — tap karke dekho</div></div>';
+  h+='<span id="carry-arr" style="color:#fff;font-size:18px">▼</span></div>';
+  h+='<div id="carry-list" style="display:none;margin-top:10px">';
+  uncollected.forEach(function(o){
+    var c=DB.customers.find(function(x){return x.id===o.custId;});
+    h+='<div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+    h+='<div style="flex:1"><div style="color:#fff;font-weight:700;font-size:13px">'+(c?c.name:'?')+'</div>';
+    h+='<div style="color:rgba(255,255,255,.75);font-size:11px">'+o.date+' · '+(o.meal||'')+' · '+(c&&c.zone?c.zone:'')+'</div></div>';
+    h+='<button onclick="event.stopPropagation();markTiffinCollected('+o.id+')" style="background:#fff;color:var(--or);border:none;border-radius:9px;padding:8px 12px;font-weight:800;font-size:12px;cursor:pointer">📦 Liya!</button>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+var carryOpen=false;
+function toggleCarryList(){
+  carryOpen=!carryOpen;
+  var el=document.getElementById('carry-list');
+  var arr=document.getElementById('carry-arr');
+  if(el) el.style.display=carryOpen?'block':'none';
+  if(arr) arr.textContent=carryOpen?'▲':'▼';
+}
+
+// ===== LADIES CLASS =====
+function getTodayClass(){
+  load();
+  if(!DB.classAtt) return {};
+  var key='att_'+today();
+  return DB.classAtt[key]||{};
+}
+
+function renderClass(){
+  load();
+  var d=getTodayClass();
+  var count=d.count||0;
+  var rotiEach=d.rotiEach||2;
+  var total=d.total||0;
+  if(!DB.classMembers)DB.classMembers=[];
+  var n=new Date(),m=n.getMonth(),y=n.getFullYear();
+
+  var h='<div class="banner" style="background:linear-gradient(135deg,#8E44AD,#9B59B6)">';
+  h+='<div class="banner-title">👩 Ladies Class</div>';
+  h+='<div class="banner-sub">'+today()+'</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">';
+  h+='<div style="background:rgba(255,255,255,.25);border-radius:12px;padding:14px;text-align:center">';
+  h+='<div style="color:#fff;font-size:36px;font-weight:800">'+count+'</div>';
+  h+='<div style="color:rgba(255,255,255,.9);font-size:12px;font-weight:600">👩 Ladies</div></div>';
+  h+='<div style="background:rgba(255,255,255,.25);border-radius:12px;padding:14px;text-align:center">';
+  h+='<div style="color:#fff;font-size:36px;font-weight:800">'+total+'</div>';
+  h+='<div style="color:rgba(255,255,255,.9);font-size:12px;font-weight:600">🫓 Total Roti</div></div>';
+  h+='</div>';
+  if(count>0) h+='<div style="margin-top:10px;background:rgba(255,255,255,.15);border-radius:10px;padding:8px;text-align:center;color:#fff;font-size:13px">'+count+' × '+rotiEach+' = <strong>'+total+' roti</strong></div>';
+  h+='</div>';
+
+  // Members list with payment
+  h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+  h+='<div class="card-title" style="margin-bottom:0">👩 Members List</div>';
+  h+='<button onclick="openAddLadyModal()" style="background:linear-gradient(135deg,#8E44AD,#9B59B6);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer">+ Add Lady</button>';
+  h+='</div>';
+  if(!DB.classMembers.length){
+    h+='<div class="empty" style="padding:16px"><div class="ei">👩</div>Koi member nahi — Add karo!</div>';
+  } else {
+    DB.classMembers.forEach(function(mem){
+      var paid=0;
+      if(mem.payments){mem.payments.forEach(function(p){var pd=new Date(p.date);if(pd.getMonth()===m&&pd.getFullYear()===y)paid+=p.amount;});}
+      var planAmt=mem.plan||1500;
+      var due=Math.max(0,planAmt-paid);
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--br)">';
+      h+='<div><div style="font-weight:700;font-size:14px">👩 '+mem.name+'</div>';
+      h+='<div style="font-size:11px;color:var(--sb)">₹'+planAmt+'/month • Paid: ₹'+paid+'</div></div>';
+      h+='<div style="display:flex;align-items:center;gap:6px">';
+      h+='<span style="font-weight:800;font-size:13px;color:'+(due>0?'var(--rd)':'var(--gn)')+'">'+(due>0?'₹'+due+' due':'✅')+'</span>';
+      h+='<button onclick="addLadyPayment('+mem.id+')" class="btn btn-success btn-sm">💵</button>';
+      h+='<button onclick="delClassMember('+mem.id+')" class="btn btn-danger btn-sm">🗑️</button>';
+      h+='</div></div>';
+    });
+  }
+  h+='</div>';
+
+  // Payment history this month
+  var allPays=[];
+  DB.classMembers.forEach(function(mem){
+    if(mem.payments){mem.payments.forEach(function(p){var pd=new Date(p.date);if(pd.getMonth()===m&&pd.getFullYear()===y)allPays.push({name:mem.name,amount:p.amount,date:p.date});});}
+  });
+  if(allPays.length){
+    allPays.sort(function(a,b){return a.date<b.date?1:-1;});
+    h+='<div class="card"><div class="card-title">✅ Is Mahine Kisne Diya</div>';
+    allPays.forEach(function(p){
+      h+='<div class="order-row"><div><div style="font-weight:700;font-size:13px">👩 '+p.name+'</div>';
+      h+='<div style="font-size:11px;color:var(--sb)">'+fmt(p.date)+'</div></div>';
+      h+='<div style="font-weight:800;color:var(--gn)">₹'+p.amount+'</div></div>';
+    });
+    h+='</div>';
+  }
+
+  document.getElementById('page-class').innerHTML=h;
+}
+
+function openAddClassMember(){
+  var d=getTodayClass();
+  document.getElementById('cm-count').value=d.count||5;
+  document.getElementById('cm-count-disp').textContent=d.count||5;
+  document.getElementById('cm-chapati').value=d.rotiEach||2;
+  document.getElementById('cm-chapati-disp').textContent=d.rotiEach||2;
+  document.getElementById('cm-total-disp').textContent=(d.count||5)*(d.rotiEach||2);
+  openModal('modal-add-class-member');
+}
+function adjCmCount(delta){
+  var c=Math.max(0,parseInt(document.getElementById('cm-count').value||5)+delta);
+  document.getElementById('cm-count').value=c;
+  document.getElementById('cm-count-disp').textContent=c;
+  document.getElementById('cm-total-disp').textContent=c*parseInt(document.getElementById('cm-chapati').value||2);
+}
+function adjCmChapati(delta){
+  var r=Math.max(1,parseInt(document.getElementById('cm-chapati').value||2)+delta);
+  document.getElementById('cm-chapati').value=r;
+  document.getElementById('cm-chapati-disp').textContent=r;
+  document.getElementById('cm-total-disp').textContent=parseInt(document.getElementById('cm-count').value||5)*r;
+}
+function saveClassMember(){
+  var count=parseInt(document.getElementById('cm-count').value)||5;
+  var rotiEach=parseInt(document.getElementById('cm-chapati').value)||2;
+  load();
+  if(!DB.classAtt) DB.classAtt={};
+  var key='att_'+today();
+  DB.classAtt[key]={count:count,rotiEach:rotiEach,total:count*rotiEach};
+  save();
+  closeModal('modal-add-class-member');
+  toast('✅ '+count+' ladies, '+(count*rotiEach)+' roti save ho gayi! 👩');
+  renderClass();
+}
+function getTodayClass(){
+  load();
+  if(!DB.classAtt) return {};
+  var key='att_'+today();
+  return DB.classAtt[key]||{};
+}
+
+var selLadyPlan=1500;
+function selectLadyPlan(p){
+  selLadyPlan=p;
+  [2500,2000,1500].forEach(function(v){var el=document.getElementById('lplan-'+v);if(el)el.classList.toggle('sel',v===p);});
+  document.getElementById('lady-plan').value=p;
+}
+function openAddLadyModal(){
+  document.getElementById('lady-name').value='';
+  document.getElementById('lady-phone').value='';
+  selectLadyPlan(1500);
+  openModal('modal-add-lady');
+}
+function saveLady(){
+  var name=document.getElementById('lady-name').value.trim();
+  if(!name){toast('⚠️ Naam daalo!');return;}
+  load();
+  if(!DB.classMembers)DB.classMembers=[];
+  DB.classMembers.push({id:Date.now(),name:name,phone:document.getElementById('lady-phone').value.trim(),plan:selLadyPlan,payments:[]});
+  save();
+  closeModal('modal-add-lady');
+  toast('✅ '+name+' add ho gayi!');
+  renderClass();
+}
+function addLadyPayment(id){
+  load();
+  if(!DB.classMembers)return;
+  var mem=DB.classMembers.find(function(m){return m.id===id;});
+  if(!mem)return;
+  var amt=parseInt(prompt('💰 '+mem.name+' se kitna mila? ₹',mem.plan||1500));
+  if(!amt||isNaN(amt)||amt<=0)return;
+  if(!mem.payments)mem.payments=[];
+  mem.payments.push({amount:amt,date:today()});
+  save();
+  toast('✅ ₹'+amt+' '+mem.name+' se collect!');
+  renderClass();
+}
+function delClassMember(id){
+  if(!confirm('Member delete karo?')) return;
+  load();
+  DB.classMembers=DB.classMembers.filter(function(m){return m.id!=id;});
+  save(); toast('🗑️ Delete!'); renderClass();
+}
+
+// INIT
+if(localStorage.getItem('dark')==='1'){document.body.classList.add('dark');}
+document.getElementById('pg-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+document.getElementById('c-start').value=today();
+load();
+
+// PIN PAD event listeners — attach after DOM ready
+document.getElementById('pin-pad').addEventListener('click',function(e){
+  var key=e.target.closest('.pin-key');
+  if(key) pinKey(key.getAttribute('data-key'));
+});
+document.querySelectorAll('.role-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    selectRole(btn.getAttribute('data-role'));
+  });
+});
+</script>
+</body>
+</html>
